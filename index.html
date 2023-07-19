@@ -50,7 +50,7 @@
 
     map.on('load', function() {
         for (var i=0; i<runs.length; i++){
-            addLayer(runs[i][2].features[0].geometry.coordinates[0],runs[i][0],"black")
+            addLayer(runs[i][2].features[0].geometry.coordinates[0],runs[i][0],"blue")
             map.setLayoutProperty(runs[i][0], 'visibility', 'none');
         }
 }
@@ -115,7 +115,7 @@
         },
         "paint": {
             "line-color": color,
-            "line-width": 3
+            "line-width": 5
         }
     })
     }
