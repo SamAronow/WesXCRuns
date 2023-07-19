@@ -1,9 +1,128 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>Work</title>
-<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-<div>Hellow World</div>
+  <meta charset="utf-8">
+  <title>WesXC Runs</title>
+  <link rel="icon" type="image/png" href="WesLogo.png" sizes="32x32" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet" />
+  <script src = "routes.js"></script>
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    #RouteTable {
+      position: fixed;
+      bottom: 0px;
+      left: 0px;
+      width: 15%;
+      height: 100%;
+      background-color: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+  </style>
 </head>
+<body>
+  <div id="map"></div>
+  <div id="RouteTable">
+    <h1>Routes:</h1>
+    <table id = "routes">
+        <tr>
+          <th>Name</th>
+          <th>Distance</th>
+          <th>See</th>
+        </tr>
+      </table> 
+  </div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic2FtYXJudyIsImEiOiJjbGl1c2F1dDAwOW02M3BueTJwdDViNHY4In0.5F8W4nYLQk7H0xjRONCGkw'; // Replace with your Mapbox access token
+
+    var map = new mapboxgl.Map({
+      container: 'map', // Container ID
+      style: 'mapbox://styles/mapbox/satellite-streets-v11', // Mapbox Satellite Streets style
+      center: [-72.66114, 41.551358], // Initial center coordinates (longitude, latitude)
+      zoom: 13 // Initial zoom level
+    });
+
+    map.on('load', function() {
+        for (var i=0; i<runs.length; i++){
+            addLayer(runs[i][2].features[0].geometry.coordinates[0],runs[i][0],"black")
+            map.setLayoutProperty(runs[i][0], 'visibility', 'none');
+        }
+}
+);
+    
+    var table = document.getElementById("routes")
+    var row;
+    var cell;
+    var button;
+    for (var i=0; i<runs.length; i++){
+        row = table.insertRow();
+        for (var j = 0; j<3; j++){
+            row.insertCell();
+        }
+        row.cells[0].innerHTML = runs[i][0]
+        row.cells[1].innerHTML = runs[i][1]+"";
+        button = document.createElement("button");
+        button.id = runs[i][0];
+        button.textContent = "Show";
+        button.addEventListener("click",show);
+        row.cells[2].appendChild(button);
+    }
+
+    function show(event){
+        var id = event.target.id;
+        var table = document.getElementById("routes")
+        for (var index=0; index<runs.length; index++){
+            if (id==runs[index][0]){
+                break;
+            }
+        }
+        if (table.rows[index+1].cells[2].textContent =="Show"){
+            map.setLayoutProperty(runs[index][0], 'visibility', 'visible');
+            event.target.textContent = "Hide";
+        }
+        else{
+            map.setLayoutProperty(runs[index][0], 'visibility', 'none');
+            event.target.textContent = "Show";
+
+        }
+    }
+
+    function addLayer(coords,name,color){
+        map.addLayer({
+        "id": name,
+        "type": "line",
+        "source": {
+            "type": "geojson",
+            "data": {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": coords
+                }
+            }
+        },
+
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": color,
+            "line-width": 3
+        }
+    })
+    }
+  </script>
+</body>
 </html>
+
+
+
+
