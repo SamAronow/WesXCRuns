@@ -30,6 +30,16 @@
   border-collapse: collapse;
   width: 100%;
 }
+#toggleSat{
+    position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
 
 th, td {
   border: 1px solid black;
@@ -39,6 +49,7 @@ th, td {
 </head>
 <body>
   <div id="map"></div>
+  <button id="toggleSat" onclick = "toggleSattellite()">Use Street View</button>
   <div class="scrollable-div" id = "RouteTable">
 
     <h1>Routes:</h1>
@@ -56,10 +67,12 @@ th, td {
 
     var map = new mapboxgl.Map({
       container: 'map', // Container ID
-      style: 'mapbox://styles/mapbox/streets-v11', // Mapbox Satellite Streets style
+      style: 'mapbox://styles/mapbox/satellite-streets-v11', // Mapbox Satellite Streets style
       center: [-72.66114, 41.551358], // Initial center coordinates (longitude, latitude)
       zoom: 13 // Initial zoom level
     });
+
+    document.getElementById('toggleSat').style.zIndex='1'
 
     map.on('load', function() {
         for (var i=0; i<runs.length; i++){
@@ -86,6 +99,21 @@ th, td {
         button.addEventListener("click",show);
         row.cells[2].appendChild(button);
     }
+
+    function toggleSattellite() {
+        console.log(document.getElementById('toggleSat').textContent)
+        if (document.getElementById('toggleSat').textContent=="Use Street View"){
+            document.getElementById('toggleSat').textContent = "Use Sattelite View";
+            map.setStyle('mapbox://styles/mapbox/streets-v11');
+        }
+        else{
+            document.getElementById('toggleSat').textContent = "Use Street View";
+            map.setStyle('mapbox://styles/mapbox/satellite-streets-v11');
+        }
+     // map.setStyle('mapbox://styles/mapbox/streets-v11'); // Switch to map view
+      //map.setStyle('mapbox://styles/mapbox/satellite-v9'); // Switch to satellite view
+      
+  }
 
     function show(event){
         var id = event.target.id;
