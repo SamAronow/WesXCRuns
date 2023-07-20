@@ -94,11 +94,17 @@ th, td {
         row.cells[0].innerHTML = runs[i][0]
         row.cells[1].innerHTML = runs[i][1]+"";
         button = document.createElement("button");
-        button.id = runs[i][0];
+        button.id = runs[i][0]+"b";
         button.textContent = "Show";
         button.addEventListener("click",show);
+        button.style.backgroundColor = '#007bff'
+        button.style.color = "white"
+        button.style.border = 'none';
+        button.style.cursor = 'pointer';
+        button.style.padding = '7px'
         row.cells[2].appendChild(button);
     }
+
 
     function toggleSattellite() {
         console.log(document.getElementById('toggleSat').textContent)
@@ -117,6 +123,7 @@ th, td {
 
     function show(event){
         var id = event.target.id;
+        id = id.substring(0,id.length-1)
         var table = document.getElementById("routes")
         for (var index=0; index<runs.length; index++){
             if (id==runs[index][0]){
@@ -125,10 +132,12 @@ th, td {
         }
         if (table.rows[index+1].cells[2].textContent =="Show"){
             map.setLayoutProperty(runs[index][0], 'visibility', 'visible');
+            document.getElementById(runs[index][0]+"b").style.backgroundColor = "black"
             event.target.textContent = "Hide";
         }
         else{
             map.setLayoutProperty(runs[index][0], 'visibility', 'none');
+            document.getElementById(runs[index][0]+"b").style.backgroundColor = '#007bff'
             event.target.textContent = "Show";
 
         }
