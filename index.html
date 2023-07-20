@@ -11,6 +11,7 @@
     body { margin: 0; padding: 0; }
     #map { position: absolute; top: 0; bottom: 0; width: 100%; }
     #RouteTable {
+    overflow: auto;
       position: fixed;
       bottom: 0px;
       left: 0px;
@@ -22,12 +23,24 @@
       border-radius: 5px;
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
       z-index: 1000;
+    border: 1px solid black;
     }
+    table {
+        left: 0px;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 8px;
+}
   </style>
 </head>
 <body>
   <div id="map"></div>
-  <div id="RouteTable">
+  <div class="scrollable-div" id = "RouteTable">
+
     <h1>Routes:</h1>
     <table id = "routes">
         <tr>
