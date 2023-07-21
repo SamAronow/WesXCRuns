@@ -8,9 +8,10 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet" />
   <script src = "routes.js"></script>
   <style>
-    body { margin: 0; padding: 0; }
+    body { margin: 0; padding: 0;}
     #map { position: absolute; top: 0; bottom: 0; width: 100%; }
     #RouteTable {
+        
     overflow: auto;
       position: fixed;
       bottom: 0px;
@@ -22,7 +23,7 @@
       border: 1px solid #ccc;
       border-radius: 5px;
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
-      z-index: 1000;
+      z-index: 1;
     border: 1px solid black;
     }
     table {
@@ -45,13 +46,45 @@ th, td {
   border: 1px solid black;
   padding: 8px;
 }
+
+.image-button {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      position: absolute;
+      left: 22%;
+      top: 0%;
+      width: 30px;
+      height: 24px;
+      z-index: 2;
+      background-image: url("leftarrow.png"); /* Add the path to your image here */
+      background-size: 100% 100%; /* Adjust image size to fit the button */
+    }
+    .image-button2 {
+      display: none;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      position: absolute;
+      left: 0%;
+      top: 0%;
+      width: 30px;
+      height: 24px;
+      z-index: 2;
+      background-image: url("rightarrow.png"); /* Add the path to your image here */
+      background-size: 100% 100%; /* Adjust image size to fit the button */
+    }
+
+
+
   </style>
 </head>
 <body>
   <div id="map"></div>
   <button id="toggleSat" onclick = "toggleSattellite()">Use Street View</button>
   <div class="scrollable-div" id = "RouteTable">
-
     <h1>Routes:</h1>
     <table id = "routes">
         <tr>
@@ -61,6 +94,9 @@ th, td {
         </tr>
       </table> 
   </div>
+  <button class="image-button" id = "hide" onclick = "hideTable()"> </button>
+  <button class="image-button2" id = "show" onclick = "showTable()"> </button>
+ 
 
   <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoic2FtYXJudyIsImEiOiJjbGl1c2F1dDAwOW02M3BueTJwdDViNHY4In0.5F8W4nYLQk7H0xjRONCGkw'; // Replace with your Mapbox access token
@@ -69,10 +105,8 @@ th, td {
       container: 'map', // Container ID
       style: 'mapbox://styles/mapbox/satellite-streets-v11', // Mapbox Satellite Streets style
       center: [-72.66114, 41.551358], // Initial center coordinates (longitude, latitude)
-      zoom: 13 // Initial zoom level
+      zoom: 14 // Initial zoom level
     });
-
-    document.getElementById('toggleSat').style.zIndex='1'
 
     map.on('load', function() {
         for (var i=0; i<runs.length; i++){
@@ -81,7 +115,13 @@ th, td {
         }
 }
 );
+
+    document.getElementById('toggleSat').style.display = 'none'
     
+
+
+    
+
     var table = document.getElementById("routes")
     var row;
     var cell;
@@ -105,9 +145,16 @@ th, td {
         row.cells[2].appendChild(button);
     }
 
+    
+    
+
 
     function toggleSattellite() {
-        console.log(document.getElementById('toggleSat').textContent)
+        console.log(map.getStyle().layers)
+        for (var i=0; i<runs.length; i++){
+            map.removeLayer(runs[i][0])
+            map.removeSource(runs[i][0])
+        }
         if (document.getElementById('toggleSat').textContent=="Use Street View"){
             document.getElementById('toggleSat').textContent = "Use Sattelite View";
             map.setStyle('mapbox://styles/mapbox/streets-v11');
@@ -116,9 +163,11 @@ th, td {
             document.getElementById('toggleSat').textContent = "Use Street View";
             map.setStyle('mapbox://styles/mapbox/satellite-streets-v11');
         }
-     // map.setStyle('mapbox://styles/mapbox/streets-v11'); // Switch to map view
-      //map.setStyle('mapbox://styles/mapbox/satellite-v9'); // Switch to satellite view
-      
+        for (var i=0; i<runs.length; i++){
+            addLayer(runs[i][2].features[0].geometry.coordinates[0],runs[i][0],"blue")
+        }
+        console.log("")
+        console.log(map.getStyle().layers)
   }
 
     function show(event){
@@ -131,6 +180,7 @@ th, td {
             }
         }
         if (table.rows[index+1].cells[2].textContent =="Show"){
+            console.log(runs[index][0])
             map.setLayoutProperty(runs[index][0], 'visibility', 'visible');
             document.getElementById(runs[index][0]+"b").style.backgroundColor = "black"
             event.target.textContent = "Hide";
@@ -141,6 +191,18 @@ th, td {
             event.target.textContent = "Show";
 
         }
+    }
+
+    function showTable(){
+        document.getElementById("show").style.display = 'none';
+        document.getElementById("hide").style.display = 'block';
+        document.getElementById("RouteTable").style.display = 'block';
+    }
+
+    function hideTable(){
+       document.getElementById("show").style.display = 'block';
+        document.getElementById("hide").style.display = 'none';
+        document.getElementById("RouteTable").style.display = 'none';
     }
 
     function addLayer(coords,name,color){
@@ -165,7 +227,7 @@ th, td {
         },
         "paint": {
             "line-color": color,
-            "line-width": 5
+            "line-width": 4
         }
     })
     }
