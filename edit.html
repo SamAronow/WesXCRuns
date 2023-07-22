@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WesXC Runs</title>
+  <link rel="icon" type="image/png" href="WesLogo.png" sizes="32x32" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet" />
+  
+  <script src = "routes.js"></script>
+  <style>
+    body { margin: 0; padding: 0;}
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    #RouteTable {
+        text-align: center;
+    overflow: auto;
+      position: fixed;
+      bottom: 0px;
+      left: 0px;
+      width: 22%;
+      height: 100%;
+      background-color: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+      z-index: 1;
+    border: 1px solid black;
+    }
+    table {
+        left: 0px;
+  border-collapse: collapse;
+  width: 100%;
+}
+#toggleSat{
+    position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+th, td {
+  border: 1px solid black;
+  padding: 8px;
+}
+
+.image-button {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      position: absolute;
+      left: 22%;
+      top: 0%;
+      width: 30px;
+      height: 24px;
+      z-index: 2;
+      background-image: url("leftarrow.png"); /* Add the path to your image here */
+      background-size: 100% 100%; /* Adjust image size to fit the button */
+    }
+    .image-button2 {
+      display: none;
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      position: absolute;
+      left: 0%;
+      top: 0%;
+      width: 30px;
+      height: 24px;
+      z-index: 2;
+      background-image: url("rightarrow.png"); /* Add the path to your image here */
+      background-size: 100% 100%; /* Adjust image size to fit the button */
+    }
+
+
+
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <button id="toggleSat" onclick = "toggleSattellite()">Use Street View</button>
+  <div class="scrollable-div" id = "RouteTable">
+    <h1>Wes XC Runs</h1>
+    <table id = "routes">
+        <tr>
+          <th>Name</th>
+          <th>Distance</th>
+          
+        </tr>
+      </table> 
+  </div>
+  <button class="image-button" id = "hide" onclick = "hideTable()"> </button>
+  <button class="image-button2" id = "show" onclick = "showTable()"> </button>
+ 
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic2FtYXJudyIsImEiOiJjbGl1c2F1dDAwOW02M3BueTJwdDViNHY4In0.5F8W4nYLQk7H0xjRONCGkw'; // Replace with your Mapbox access token
+
+    var map = new mapboxgl.Map({
+      container: 'map', // Container ID
+      style: 'mapbox://styles/mapbox/satellite-streets-v11', // Mapbox Satellite Streets style
+      center: [-72.66114, 41.551358], // Initial center coordinates (longitude, latitude)
+      zoom: 14 // Initial zoom level
+    });
+
+    map.on('load', function() {
+        for (var i=0; i<runs.length; i++){
+            addLayer(runs[i][2].features[0].geometry.coordinates[0],runs[i][0],"blue")
+            map.setLayoutProperty(runs[i][0], 'visibility', 'none');
+        }
+}
+);
+
+    document.getElementById('toggleSat').style.display = 'none'
+    
+
+
+    
+
+    var table = document.getElementById("routes")
+    var row;
+    var cell;
+    //var button;
+    for (var i=0; i<runs.length; i++){
+        row = table.insertRow();
+        for (var j = 0; j<2; j++){
+            row.insertCell();
+        }
+        row.cells[0].innerHTML = runs[i][0]
+        row.cells[1].innerHTML = runs[i][1]+"";
+        row.cells[0].addEventListener("click", show);
+        row.cells[1].addEventListener("click", show);
+        row.cells[0].style.backgroundColor = "#007bff";
+        row.cells[1].style.backgroundColor = '#007bff'
+        row.cells[0].style.color = "white";
+        row.cells[1].style.color = 'white'
+        /*button = document.createElement("button");
+        button.id = runs[i][0]+"b";
+        button.textContent = "Show";
+        button.addEventListener("click",show);
+        button.style.backgroundColor = '#007bff'
+        button.style.color = "white"
+        button.style.border = 'none';
+        button.style.cursor = 'pointer';
+        button.style.padding = '7px'
+        row.cells[2].appendChild(button);*/
+    }
+
+    
+    
+
+
+    function toggleSattellite() {
+        console.log(map.getStyle().layers)
+        for (var i=0; i<runs.length; i++){
+            map.removeLayer(runs[i][0])
+            map.removeSource(runs[i][0])
+        }
+        if (document.getElementById('toggleSat').textContent=="Use Street View"){
+            document.getElementById('toggleSat').textContent = "Use Sattelite View";
+            map.setStyle('mapbox://styles/mapbox/streets-v11');
+        }
+        else{
+            document.getElementById('toggleSat').textContent = "Use Street View";
+            map.setStyle('mapbox://styles/mapbox/satellite-streets-v11');
+        }
+        for (var i=0; i<runs.length; i++){
+            addLayer(runs[i][2].features[0].geometry.coordinates[0],runs[i][0],"blue")
+        }
+        console.log("")
+        console.log(map.getStyle().layers)
+  }
+
+    function show(event){
+        var id = event.target.innerHTML;
+        var table = document.getElementById("routes")
+        for (var index=0; index<runs.length; index++){
+            if (id==runs[index][0]){
+                break;
+            }
+        }
+        if (event.target.style.backgroundColor =="black"){
+            map.setLayoutProperty(runs[index][0], 'visibility', 'none');
+            event.target.style.backgroundColor = '#007bff'
+            table.rows[index+1].cells[1].style.backgroundColor = '#007bff'
+        }
+        else{
+            map.setLayoutProperty(runs[index][0], 'visibility', 'visible');
+            event.target.style.backgroundColor = "black"
+            table.rows[index+1].cells[1].style.backgroundColor = "black"
+        }
+    }
+
+    function showTable(){
+        document.getElementById("show").style.display = 'none';
+        document.getElementById("hide").style.display = 'block';
+        document.getElementById("RouteTable").style.display = 'block';
+    }
+
+    function hideTable(){
+       document.getElementById("show").style.display = 'block';
+        document.getElementById("hide").style.display = 'none';
+        document.getElementById("RouteTable").style.display = 'none';
+    }
+
+    function addLayer(coords,name,color){
+        map.addLayer({
+        "id": name,
+        "type": "line",
+        "source": {
+            "type": "geojson",
+            "data": {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": coords
+                }
+            }
+        },
+
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": color,
+            "line-width": 4
+        }
+    })
+    }
+  </script>
+</body>
+</html>
+
+
+
+
