@@ -6,12 +6,13 @@
   <link rel="icon" type="image/png" href="WesLogo.png" sizes="32x32" />
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet" />
+  
   <script src = "routes.js"></script>
   <style>
     body { margin: 0; padding: 0;}
     #map { position: absolute; top: 0; bottom: 0; width: 100%; }
     #RouteTable {
-        
+        text-align: center;
     overflow: auto;
       position: fixed;
       bottom: 0px;
@@ -85,7 +86,7 @@ th, td {
   <div id="map"></div>
   <button id="toggleSat" onclick = "toggleSattellite()">Use Street View</button>
   <div class="scrollable-div" id = "RouteTable">
-    <h1>Routes:</h1>
+    <h1>Wes XC Runs</h1>
     <table id = "routes">
         <tr>
           <th>Name</th>
