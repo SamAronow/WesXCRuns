@@ -60,8 +60,10 @@
   }
 #toggleSat{
     position: fixed;
-  bottom: 20px;
-  right: 20px;
+    size: fixed;
+    width: 155px;
+  bottom: 30px;
+  right: 15px;
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -69,9 +71,11 @@
   cursor: pointer;
 }
 #toggleSelect{
+    size: fixed;
     position: fixed;
-  bottom: 30px;
-  right: 20px;
+    width: 155px;
+  bottom: 70px;
+  right: 15px;
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -95,7 +99,7 @@ th, td {
       width: 30px;
       height: 24px;
       z-index: 2;
-      background-image: url("leftarrow.png"); /* Add the path to your image here */
+      background-image: url("leftarrow2.png"); /* Add the path to your image here */
       background-size: 100% 100%; /* Adjust image size to fit the button */
     }
     .image-button2 {
@@ -166,18 +170,16 @@ th, td {
   <div class="overlay" id="overlay"></div>
   <div class="popup" id="popup">
     <span class="close-button" onclick="closePopup()">&times;</span>
-    <p>Welcome to WesXC Routes! Here you can explore all of our teams runs and explore different options 
-      to expand your route choices! To view a run on the map simply click on it's row of the table to show
-      or hide the map! You are currently in single-select mode where showing
-      a new route will hide the previous route, however if you'd like you can use the bottom right button to
-    change to Multi-Select Mode where you can see any number of runs at once! <br><br>I'm currently just trying to get
-      all the features down so for 
-      now the graphics are very janky and a lot of things are just styled enough to be useful. I'm currently
-      working on adding more of our routesand working 
-      on a satellite vs street map toggle, but would love to hear feedback for more changes or improvements! Enjoy!
+    <p>Welcome to WesXC Routes! Here you can view and explore all of our teams runs! Simply click on a run's row of the 
+    table to show or hide the route! You are currently in single-select mode where showing a new route will hide the 
+    previous route, however if you'd like you can use the bottom right button to change to Multi-Select Mode where you 
+     can see any number of runs at once!<br><br>I'm currently just trying to get
+      all the features down so for now the graphics are very janky and a lot of things are just styled enough to be functional. 
+      I'm currently just working on adding more of our routes, but feel that all the other features are there besides styling
+    but I would love to hear feedback for more changes or improvements!
     </p>
   </div>
-  <button id="toggleSat" onclick = "toggleSattellite()">Use Street View</button>
+  <button id="toggleSat" onclick = "toggleSatellite()">View Streets</button>
   <button id="toggleSelect" onclick = "toggleSelect()">Use Multi Select</button>
   <div class="scrollable-div" id = "RouteTable">
     <h1>Wes XC Runs</h1>
@@ -197,6 +199,7 @@ th, td {
   <script>
     var clickOrder = new Array(0);
     var curSingle = true;
+    var isSatellite=true;
     mapboxgl.accessToken = 'pk.eyJ1Ijoic2FtYXJudyIsImEiOiJjbGl1c2F1dDAwOW02M3BueTJwdDViNHY4In0.5F8W4nYLQk7H0xjRONCGkw'; // Replace with your Mapbox access token
 
     var map = new mapboxgl.Map({
@@ -214,7 +217,7 @@ th, td {
 }
 );
 
-    document.getElementById('toggleSat').style.display = 'none'
+    //document.getElementById('toggleSat').style.display = 'none'
     
 
 
@@ -262,28 +265,47 @@ th, td {
     window.onload = showPopup;
 
 
-    function toggleSattellite() {
-        console.log(map.getStyle().layers)
-        for (var i=0; i<runs.length; i++){
-            map.removeLayer(runs[i][0])
-            map.removeSource(runs[i][0])
-        }
-        if (document.getElementById('toggleSat').textContent=="Use Street View"){
-            document.getElementById('toggleSat').textContent = "Use Sattelite View";
-            map.setStyle('mapbox://styles/mapbox/streets-v11');
-        }
-        else{
-            document.getElementById('toggleSat').textContent = "Use Street View";
-            map.setStyle('mapbox://styles/mapbox/satellite-streets-v11');
-        }
-        for (var i=0; i<runs.length; i++){
-            addLayer(runs[i][2].features[0].geometry.coordinates[0],runs[i][0],"blue")
-        }
-        console.log("")
-        console.log(map.getStyle().layers)
+
+    function toggleSatellite() {
+  for (var i = 0; i < runs.length; i++) {
+    map.removeLayer(runs[i][0]);
+    map.removeSource(runs[i][0]);
   }
 
+  if (!isSatellite) {
+    map.setStyle('mapbox://styles/mapbox/satellite-streets-v11');
+    isSatellite = true;
+    document.getElementById("toggleSat").textContent= "View Streets"
+  } else {
+    map.setStyle('mapbox://styles/mapbox/streets-v11');
+    document.getElementById("toggleSat").textContent= "View Satellite"
+    isSatellite = false;
+  }
+
+  map.on('style.load', function () {
+    for (var i = 0; i < runs.length; i++) {
+      addLayer(runs[i][2].features[0].geometry.coordinates[0], runs[i][0], "blue");
+      map.setLayoutProperty(runs[i][0], 'visibility', 'none');
+      for (var j=0; j<clickOrder.length; j++){
+        if (clickOrder[j]==i){
+            map.setLayoutProperty(runs[i][0], 'visibility', 'visible');
+        }
+    }
+    }
+    console.log(map.getStyle().layers);
+  });
+}
+
+
+
+    const interval = setInterval(myFunction, 10000);
+
+    function myFunction(){
+        console.log(map.getStyle().layers)
+    }
+
     function show(event){
+       // console.log(map.getStyle().layers)
       var clickedRow = event.target.parentElement;
     var index = Array.from(clickedRow.parentNode.children).indexOf(clickedRow);
         
