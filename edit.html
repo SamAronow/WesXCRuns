@@ -11,6 +11,9 @@
   <style>
     body { margin: 0; padding: 0;}
     #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    .container {
+      display: inline-block;
+    }
     #RouteTable {
         text-align: center;
     overflow: auto;
@@ -27,6 +30,22 @@
       z-index: 1;
     border: 1px solid black;
     }
+  #showInfoDiv {
+    display: none;
+        text-align: center;
+      position: absolute;
+      top: 0px;
+      left: 24.8%;
+      width: 10%;
+      height: 30%;
+      background-color: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+      z-index: 1;
+    border: 1px solid black;
+    }
     table {
         left: 0px;
   border-collapse: collapse;
@@ -35,6 +54,16 @@
 #toggleSat{
     position: fixed;
   bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+#toggleSelect{
+    position: fixed;
+  bottom: 30px;
   right: 20px;
   padding: 10px 20px;
   background-color: #007bff;
@@ -77,6 +106,39 @@ th, td {
       background-image: url("rightarrow.png"); /* Add the path to your image here */
       background-size: 100% 100%; /* Adjust image size to fit the button */
     }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+      z-index: 999; /* Ensure the overlay is on top of other elements */
+    }
+
+    /* Styles for the pop-up content */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      z-index: 1000; /* Ensure the pop-up is on top of other elements */
+      font-size: 20px;
+    }
+
+    /* Styles for the close button */
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
 
 
 
@@ -84,7 +146,22 @@ th, td {
 </head>
 <body>
   <div id="map"></div>
+  <div class="overlay" id="overlay"></div>
+  <div class="popup" id="popup">
+    <span class="close-button" onclick="closePopup()">&times;</span>
+    <p>Welcome to WesXC Routes! Here you can explore all of our teams runs and explore different options 
+      to expand your route choices! To view a run on the map simply click on it's row of the table to show
+      or hide the map! You are currently in multi-select mode where you can see any number of runs at once
+      however if you'd like you can use the bottom right button to change to Single-Select Mode where showing
+      a new Trail will hide the previous trail! I'm currently just trying to get all the features down so for 
+      now the graphics are very janky and a lot of things are just styled enough to be useful. I'm currently
+      working on adding more of our routes, putting information in the pop up box next to the list, and working 
+      on a satellite vs street map toggle, but would love to hear feedback for more changes or improvements! Enjoy!
+
+    </p>
+  </div>
   <button id="toggleSat" onclick = "toggleSattellite()">Use Street View</button>
+  <button id="toggleSelect" onclick = "toggleSelect()">Use Single Select</button>
   <div class="scrollable-div" id = "RouteTable">
     <h1>Wes XC Runs</h1>
     <table id = "routes">
@@ -95,11 +172,14 @@ th, td {
         </tr>
       </table> 
   </div>
+  <div id = showInfoDiv></div>
   <button class="image-button" id = "hide" onclick = "hideTable()"> </button>
   <button class="image-button2" id = "show" onclick = "showTable()"> </button>
  
 
   <script>
+    var clickOrder = new Array(0);
+    var curSingle
     mapboxgl.accessToken = 'pk.eyJ1Ijoic2FtYXJudyIsImEiOiJjbGl1c2F1dDAwOW02M3BueTJwdDViNHY4In0.5F8W4nYLQk7H0xjRONCGkw'; // Replace with your Mapbox access token
 
     var map = new mapboxgl.Map({
@@ -136,6 +216,8 @@ th, td {
         row.cells[1].innerHTML = runs[i][1]+"";
         row.cells[0].addEventListener("click", show);
         row.cells[1].addEventListener("click", show);
+        row.cells[0].addEventListener("contextmenu", showInfo);
+        row.cells[1].addEventListener("contextmenu", showInfo);
         row.cells[0].style.backgroundColor = "#007bff";
         row.cells[1].style.backgroundColor = '#007bff'
         row.cells[0].style.color = "white";
@@ -151,6 +233,20 @@ th, td {
         button.style.padding = '7px'
         row.cells[2].appendChild(button);*/
     }
+
+    var overlay = document.getElementById('overlay');
+    var popup = document.getElementById('popup');
+    
+    function showPopup() {
+      overlay.style.display = 'block';
+      popup.style.display = 'block';
+    }
+
+    function closePopup() {
+      overlay.style.display = 'none';
+      popup.style.display = 'none';
+    }
+    window.onload = showPopup;
 
     
     
@@ -178,23 +274,46 @@ th, td {
   }
 
     function show(event){
-        var id = event.target.innerHTML;
-        var table = document.getElementById("routes")
-        for (var index=0; index<runs.length; index++){
-            if (id==runs[index][0]){
-                break;
+      var clickedRow = event.target.parentElement;
+    var index = Array.from(clickedRow.parentNode.children).indexOf(clickedRow);
+        
+        if (document.getElementById("routes").rows[index].cells[0].style.backgroundColor =="black"){
+            map.setLayoutProperty(runs[index-1][0], 'visibility', 'none');
+            document.getElementById("routes").rows[index].cells[0].style.backgroundColor = '#007bff'
+            document.getElementById("routes").rows[index].cells[1].style.backgroundColor = '#007bff'
+            clickOrder.splice(clickOrder.indexOf(index-1),1)
+            if (clickOrder.length==0){
+              document.getElementById("showInfoDiv").style.display = 'none'
             }
-        }
-        if (event.target.style.backgroundColor =="black"){
-            map.setLayoutProperty(runs[index][0], 'visibility', 'none');
-            event.target.style.backgroundColor = '#007bff'
-            table.rows[index+1].cells[1].style.backgroundColor = '#007bff'
+            else{
+              if (runs[clickOrder[clickOrder.length-1]][0]!=document.getElementById("showInfoDiv").innerHTML){
+                document.getElementById("showInfoDiv").innerHTML = runs[clickOrder[clickOrder.length-1]][0]
+              }
+              
+            }
+           
         }
         else{
-            map.setLayoutProperty(runs[index][0], 'visibility', 'visible');
-            event.target.style.backgroundColor = "black"
-            table.rows[index+1].cells[1].style.backgroundColor = "black"
+            map.setLayoutProperty(runs[index-1][0], 'visibility', 'visible');
+            document.getElementById("routes").rows[index].cells[0].style.backgroundColor = "black"
+            document.getElementById("routes").rows[index].cells[1].style.backgroundColor = "black"
+            showInfo(index)
+            if (curSingle && clickOrder.length!=0){
+                map.setLayoutProperty(runs[clickOrder[0]][0], 'visibility', 'none');
+              document.getElementById("routes").rows[clickOrder[0]+1].cells[0].style.backgroundColor = '#007bff'
+              document.getElementById("routes").rows[clickOrder[0]+1].cells[1].style.backgroundColor = '#007bff'
+              clickOrder = new Array(0)
+              }
+            clickOrder.push(index-1)
         }
+        console.log(clickOrder)
+
+    }
+
+    function showInfo(rowIndex){
+      document.getElementById("showInfoDiv").style.display = 'block'
+      //console.log(document.getElementById("routes").rows[rowIndex].cells[0].innerHTML)
+      document.getElementById("showInfoDiv").innerHTML = document.getElementById("routes").rows[rowIndex].cells[0].innerHTML;
     }
 
     function showTable(){
@@ -207,6 +326,30 @@ th, td {
        document.getElementById("show").style.display = 'block';
         document.getElementById("hide").style.display = 'none';
         document.getElementById("RouteTable").style.display = 'none';
+    }
+
+    function toggleSelect(){
+      curSingle = document.getElementById("toggleSelect").textContent != "Use Single Select";
+      if (!curSingle){
+        document.getElementById("toggleSelect").textContent = "Use Multi Select"
+        curSingle = true;
+        if (clickOrder.length>0){
+          for (var i=0; i<clickOrder.length-1; i++){
+          map.setLayoutProperty(runs[clickOrder[i]][0], 'visibility', 'none');
+            document.getElementById("routes").rows[clickOrder[i]+1].cells[0].style.backgroundColor = '#007bff'
+            document.getElementById("routes").rows[clickOrder[i]+1].cells[1].style.backgroundColor = '#007bff'
+            console.log(i)
+        }
+        clickOrder[0] = clickOrder[clickOrder.length-1]
+        clickOrder.splice(1)
+        }
+      }
+      else{
+        document.getElementById("toggleSelect").textContent = "Use Single Select"
+        curSingle = false;
+      }
+      console.log(curSingle)
+      console.log(clickOrder)
     }
 
     function addLayer(coords,name,color){
