@@ -38,7 +38,7 @@
       position: absolute;
       top: 0px;
       left: 24.8%;
-      width: 10%;
+      width: 12%;
       height: auto;
       background-color: white;
       padding: 5px 15px;
@@ -236,9 +236,15 @@ th, td {
         row.cells[0].addEventListener("contextmenu", showInfo);
         row.cells[1].addEventListener("contextmenu", showInfo);
         row.cells[0].style.backgroundColor = "#C21807";
-        row.cells[1].style.backgroundColor = '#C21807'
-        row.cells[0].style.color = "white";
-        row.cells[1].style.color = 'white'
+        row.cells[1].style.backgroundColor = '#C21807';
+        if (!runs[i][3].includes("Comments: </p>")){
+            row.cells[0].style.color = "white";
+        row.cells[1].style.color = 'white';
+        }
+        else{
+            row.cells[0].style.color = "blue";
+         row.cells[1].style.color = "blue";
+        }
     }
 
     var overlay = document.getElementById('overlay');
@@ -254,11 +260,6 @@ th, td {
       popup.style.display = 'none';
     }
     window.onload = showPopup;
-
-    
-
-    
-    
 
 
     function toggleSattellite() {
@@ -315,13 +316,11 @@ th, td {
               }
             clickOrder.push(index-1)
         }
-        console.log(clickOrder)
 
     }
 
     function showInfo(rowIndex){
       document.getElementById("showInfoDiv").style.display = 'block'
-      //console.log(document.getElementById("routes").rows[rowIndex].cells[0].innerHTML)
       document.getElementById("showInfoDiv").innerHTML = runs[rowIndex-1][3];
     }
 
@@ -349,7 +348,6 @@ th, td {
           map.setLayoutProperty(runs[clickOrder[i]][0], 'visibility', 'none');
             document.getElementById("routes").rows[clickOrder[i]+1].cells[0].style.backgroundColor = '#C21807'
             document.getElementById("routes").rows[clickOrder[i]+1].cells[1].style.backgroundColor = '#C21807'
-            console.log(i)
         }
         clickOrder[0] = clickOrder[clickOrder.length-1]
         clickOrder.splice(1)
@@ -359,8 +357,6 @@ th, td {
         document.getElementById("toggleSelect").textContent = "Use Single Select"
         curSingle = false;
       }
-      console.log(curSingle)
-      console.log(clickOrder)
     }
 
    
