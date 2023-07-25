@@ -28,6 +28,7 @@
       bottom: 0px;
       left: 0px;
       width: 22%;
+      min-width: 220px;
       height: 100%;
       background-color: white;
       padding: 20px;
@@ -42,8 +43,9 @@
         text-align: center;
       position: absolute;
       top: 0px;
-      left: 22%;
-      width: 12%;
+      left: max(22%, 220px);
+      
+      width: max(12%, 170px);
       height: auto;
       background-color: white;
       padding: 5px 15px;
@@ -99,7 +101,7 @@ th, td {
       padding: 0;
       cursor: pointer;
       position: absolute;
-      left: 22%;
+      left: max(22%, 220px);
   margin-left: -30px;
       top: 0%;
       width: 30px;
