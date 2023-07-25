@@ -2,11 +2,16 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>WesXC Runs</title>
+</head>
   <link rel="icon" type="image/png" href="WesLogo.png" sizes="32x32" />
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet" />
   <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
+  <!-- Add this link to the head section of your HTML file -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 
   
   <script src = "routes.js"></script>
@@ -37,7 +42,7 @@
         text-align: center;
       position: absolute;
       top: 0px;
-      left: 24.8%;
+      left: 22%;
       width: 12%;
       height: auto;
       background-color: white;
@@ -74,7 +79,7 @@
     size: fixed;
     position: fixed;
     width: 155px;
-  bottom: 70px;
+  bottom: 75px;
   right: 15px;
   padding: 10px 20px;
   background-color: #007bff;
@@ -95,6 +100,7 @@ th, td {
       cursor: pointer;
       position: absolute;
       left: 22%;
+  margin-left: -30px;
       top: 0%;
       width: 30px;
       height: 24px;
@@ -150,6 +156,9 @@ th, td {
       right: 10px;
       cursor: pointer;
     }
+    .toggleButtton{
+        font-size: 13px;
+    }
 
     h3 {
       color: #333;
@@ -159,6 +168,9 @@ th, td {
     }
     div {
       padding: 5px;
+    }
+    h1{
+        font-size: 25px;
     }
 
 
@@ -173,14 +185,11 @@ th, td {
     <p>Welcome to WesXC Routes! Here you can view and explore all of our teams runs! Simply click on a run's row of the 
     table to show or hide the route! You are currently in single-select mode where showing a new route will hide the 
     previous route, however if you'd like you can use the bottom right button to change to Multi-Select Mode where you 
-     can see any number of runs at once!<br><br>I'm currently just trying to get
-      all the features down so for now the graphics are very janky and a lot of things are just styled enough to be functional. 
-      I'm currently just working on adding more of our routes, but feel that all the other features are there besides styling
-    but I would love to hear feedback for more changes or improvements!
+     can see any number of runs at once!
     </p>
   </div>
-  <button id="toggleSat" onclick = "toggleSatellite()">View Streets</button>
-  <button id="toggleSelect" onclick = "toggleSelect()">Use Multi Select</button>
+  <button class = "toggleButtton" id="toggleSat" onclick = "toggleSatellite()">View Streets</button>
+  <button class = "toggleButtton" id="toggleSelect" onclick = "toggleSelect()">Use Multi Select</button>
   <div class="scrollable-div" id = "RouteTable">
     <h1>Wes XC Runs</h1>
     <table id = "routes">
@@ -350,7 +359,10 @@ th, td {
         document.getElementById("show").style.display = 'none';
         document.getElementById("hide").style.display = 'block';
         document.getElementById("RouteTable").style.display = 'block';
-        document.getElementById("showInfoDiv").style.display = 'block'
+        
+        if (clickOrder.length!=0){
+            document.getElementById("showInfoDiv").style.display = 'block'
+        }
     }
 
     function hideTable(){
