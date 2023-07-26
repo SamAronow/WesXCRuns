@@ -221,8 +221,8 @@ th, td {
     height: auto;
 }
 #show{
-    bottom: 0%;
-}
+      bottom: 0% !important;
+    }
 #toggleSat{
 top : 0px;
 right: 0px;
@@ -277,6 +277,7 @@ width: 30%;
   <button class = "toggleButtton" id="toggleSat" onclick = "toggleSatellite()">View Streets</button>
   <button class = "toggleButtton" id="toggleSelect" onclick = "toggleSelect()">Use Multi Select</button>
   <div class="scrollable-div" id = "RouteTable">
+    <button id ="show" onclick = "showTable()">&#8594;</button>
     <h1>Wes XC Runs</h1>
     <button class="close-button" id ="hide" onclick = "hideTable()">&#8592;</button>
     <table id = "routes">
@@ -291,8 +292,6 @@ width: 30%;
     <div id = "showInfoDivText"></div>
     <button class="close-button" id ="infoClose" onclick = "closeInfo()">&times;</button>
   </div>
- 
-  <button id ="show" onclick = "showTable()">&#8594;</button>
  
 
   <script>
