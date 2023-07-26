@@ -204,10 +204,9 @@ th, td {
 #showInfoDiv {
       padding: 5px 5px;
       left: 0;
-      position: relative;
       bottom: 0 !important;
       width: 63%;
-      height: auto;
+      padding: 5px 5px;
   }
 #RouteTable {
       padding: 10px;
@@ -324,8 +323,6 @@ th, td {
         row.cells[1].innerHTML = runs[i][1]+"";
         row.cells[0].addEventListener("click", show);
         row.cells[1].addEventListener("click", show);
-        row.cells[0].addEventListener("contextmenu", showInfo);
-        row.cells[1].addEventListener("contextmenu", showInfo);
         row.cells[0].style.backgroundColor = "#C21807";
         row.cells[1].style.backgroundColor = '#C21807';
         if (!runs[i][3].includes("Comments: </p>")){
