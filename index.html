@@ -182,13 +182,42 @@ th, td {
     }
 
 
-    
+    /*
     @media only screen and (max-width: 767px) {
         .close-button {
   right: 0px;
 }
 #showInfoDiv {
       background-color: black;
+      padding: 5px 5px;
+  }
+#RouteTable {
+      padding: 10px;
+    }
+}
+
+/* Styles for phones in portrait mode (including high-resolution screens) */
+@media (pointer: coarse) and (orientation: portrait) {
+    .close-button {
+  right: 0px;
+}
+#showInfoDiv {
+      background-color: black;
+      padding: 5px 5px;
+  }
+#RouteTable {
+      padding: 10px;
+    }
+
+}
+
+/* Styles for phones in landscape mode (including high-resolution screens) */
+@media (pointer: coarse) and (orientation: landscape) {
+    .close-button {
+  right: 0px;
+}
+#showInfoDiv {
+      background-color: blue;
       padding: 5px 5px;
   }
 #RouteTable {
