@@ -71,7 +71,7 @@ table {
     size: fixed;
     width: 155px;
   bottom: 30px;
-  right: 15px;
+  right: 0px;
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -83,7 +83,7 @@ table {
     position: fixed;
     width: 155px;
   bottom: 75px;
-  right: 15px;
+  right : 0px;
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -205,7 +205,7 @@ th, td {
 }
 #showInfoDiv {
       padding: 0px;
-      left: 0;
+      right: 0;
       bottom: 0 !important;
       width: 68%;
       position: relative;
@@ -247,7 +247,7 @@ width: 30%;
 }
   #showInfoDiv {
       padding: 5px 5px;
-      right: 0%;
+      left: 0;
       position: relative;
   }
 #RouteTable {
@@ -257,6 +257,20 @@ width: 30%;
     .popup{
     width: 60%;
     height: auto;
+}
+#toggleSat{
+bottom : 10px;
+left: 0px;
+padding: 3px;
+height: 25px;
+width: 30%;
+}
+#toggleSelect{
+    bottom : 20px;
+    left: 0px;
+padding: 3px;
+height: 25px;
+width: 30%;
 }
 }
   </style>
@@ -304,7 +318,7 @@ width: 30%;
     var map = new mapboxgl.Map({
       container: 'map', // Container ID
       style: 'mapbox://styles/mapbox/satellite-streets-v11', // Mapbox Satellite Streets style
-      center: [-72.66114, 41.551358], // Initial center coordinates (longitude, latitude)
+      center: [-72.667, 41.551358], // Initial center coordinates (longitude, latitude)
       zoom: 14 // Initial zoom level
     });
 
