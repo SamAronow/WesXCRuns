@@ -490,6 +490,14 @@ function findClosestPoint(coords,point){
   });
 }
 
+function reverseArray(arr) {
+  var reversedArr = [];
+  for (var i = arr.length - 1; i >= 0; i--) {
+    reversedArr.push(arr[i]);
+  }
+  return reversedArr;
+}
+
 
 
 
@@ -517,6 +525,9 @@ function findClosestPoint(coords,point){
         }
         else{
             map.setLayoutProperty(runs[index-1][0], 'visibility', 'visible');
+            if (getMagnitude([map.getCenter().lng-runs[index-1][2].features[0].geometry.coordinates[0][0][0],map.getCenter().lat-runs[index-1][2].features[0].geometry.coordinates[0][0][1]])>.002){
+                map.setCenter(runs[index-1][2].features[0].geometry.coordinates[0][0]);
+            }
             document.getElementById("routes").rows[index].cells[0].style.backgroundColor = "black"
             document.getElementById("routes").rows[index].cells[1].style.backgroundColor = "black"
             showInfo(index)
