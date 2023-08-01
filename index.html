@@ -70,8 +70,8 @@ table {
     position: fixed;
     size: fixed;
     width: 155px;
-  bottom: 30px;
-  right: 0px;
+  bottom: 15px;
+  left: max(23%, 230px);
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -82,8 +82,8 @@ table {
     size: fixed;
     position: fixed;
     width: 155px;
-  bottom: 75px;
-  right : 0px;
+  bottom: 60px;
+  left: max(23%, 230px);
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -561,6 +561,8 @@ function reverseArray(arr) {
         if (clickOrder.length!=0 && showingInfo){
             document.getElementById("showInfoDiv").style.display = 'block'
         }
+        document.getElementById("toggleSelect").style.left = 'max(23%, 230px)'
+        document.getElementById("toggleSat").style.left = 'max(23%, 230px)'
     }
 
     function hideTable(){
@@ -568,6 +570,8 @@ function reverseArray(arr) {
         document.getElementById("hide").style.display = 'none';
         document.getElementById("RouteTable").style.display = 'none';
         document.getElementById("showInfoDiv").style.display = 'none'
+        document.getElementById("toggleSelect").style.left = '0px';
+        document.getElementById("toggleSat").style.left = '0px'
     }
 
     function toggleSelect(){
