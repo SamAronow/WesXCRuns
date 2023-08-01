@@ -242,14 +242,14 @@ th, td {
     }
 #toggleSat{
 top : 0px;
-right: 0px;
+right: 0px !important;
 padding: 3px;
 height: 25px;
 width: 30%;
 }
 #toggleSelect{
     top : 30px;
-    right: 0px;
+    right: 0px !important;
 padding: 3px;
 height: 25px;
 width: 30%;
@@ -526,7 +526,7 @@ function reverseArray(arr) {
         }
         else{
             map.setLayoutProperty(runs[index-1][0], 'visibility', 'visible');
-            if (getMagnitude([map.getCenter().lng-runs[index-1][2].features[0].geometry.coordinates[0][0][0],map.getCenter().lat-runs[index-1][2].features[0].geometry.coordinates[0][0][1]])>.002){
+            if (getMagnitude([map.getCenter().lng-runs[index-1][2].features[0].geometry.coordinates[0][0][0],map.getCenter().lat-runs[index-1][2].features[0].geometry.coordinates[0][0][1]])>.02){
                 map.setCenter(runs[index-1][2].features[0].geometry.coordinates[0][0]);
             }
             document.getElementById("routes").rows[index].cells[0].style.backgroundColor = "black"
