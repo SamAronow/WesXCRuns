@@ -16,7 +16,7 @@
       display: inline-block;
     }
     #RouteTable {
-        text-align: center;
+    text-align: center;
     overflow: auto;
       position: fixed;
       bottom: 0px;
@@ -25,13 +25,51 @@
       min-width: 220px;
       height: 100%;
       background-color: white;
-      padding: 15px;
+      padding: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
       z-index: 1;
     border: 1px solid black;
     }
+    .scrollable-container{
+        text-align: center;
+    overflow: hidden;
+      position: fixed;
+      bottom: 0px;
+      left: 0px;
+      width: 22%;
+      min-width: 220px;
+      height: 100%;
+      background-color: white;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+      z-index: 1;
+    border: 1px solid black;
+    }
+    .frozen-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px; /* Set the height of the frozen header */
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+  box-sizing: border-box;
+  z-index: 2;
+}
+.scrollable-content {
+  overflow-y: scroll;
+  width: 100%;
+  height: 100%; /* Subtract the height of the frozen header */
+  padding-top: 55px !important; /* Add a padding to move the scrollable content below the frozen header */
+  padding: 5px;
+  padding-bottom: 0px !important;
+  box-sizing: border-box;
+}
   #showInfoDiv {
     display: none;
         text-align: center;
@@ -316,7 +354,7 @@ width: 17%;
   <button class = "toggleButtton" id="toggleSat" onclick = "toggleSatellite()">View Streets</button>
   <button class = "toggleButtton" id="toggleSelect" onclick = "toggleSelect()">Use Multi Select</button>
   <button id ="show" onclick = "showTable()">&#8594;</button>
-  <div class="scrollable-div" id = "RouteTable">
+  <!--<div class="scrollable-div" id = "RouteTable">
     <h1>Wes XC Runs</h1>
     <button class="close-button" id ="hide" onclick = "hideTable()">&#8592;</button>
     <table id = "routes">
@@ -326,7 +364,23 @@ width: 17%;
           
         </tr>
     </table> 
+  </div>-->
+  <div class="scrollable-container" id ="RouteTable">
+    <div class="frozen-header">
+        <h1>Wes XC Runs</h1>
+        <button class="close-button" id ="hide" onclick = "hideTable()">&#8592;</button>
+    </div>
+    <div class="scrollable-content">
+        <table id = "routes">
+            <tr>
+              <th>Name</th>
+              <th>Distance</th>
+              
+            </tr>
+        </table> 
+    </div>
   </div>
+  
   <div id = "distanceMarker"></div>
   <div id = showInfoDiv>
     <div id = "showInfoDivText"></div>
@@ -364,6 +418,41 @@ map.on('wheel', () => {
     document.getElementById("distanceMarker").style.display = 'none'
 });
 
+map.on('mousemove', (e) => {
+  const x = e.lngLat.lng.toFixed(6); // Round the longitude to 6 decimal places
+  const y = e.lngLat.lat.toFixed(6); // Round the latitude to 6 decimal places
+  if (clickOrder.length!=1){
+        return;
+    }
+    //console.log(runs[clickOrder[0]])
+
+ var point = [map.unproject(e.point).lng,map.unproject(e.point).lat];
+ var curCoords = new Array(0);
+ for (var i=0; i<runs[clickOrder[0]][2].features[0].geometry.coordinates[0].length; i++){
+    curCoords.push(runs[clickOrder[0]][2].features[0].geometry.coordinates[0][i])
+ }
+ var closest = findClosestPoint(runs[clickOrder[0]][2].features[0].geometry.coordinates[0],point);
+ if (closest==null){
+    document.getElementById("distanceMarker").style.display = 'none'
+    return;
+ }
+ var pos = map.project(new mapboxgl.LngLat(closest[0], closest[1]));
+ document.getElementById("distanceMarker").style.display = 'block';
+  document.getElementById('distanceMarker').style.left = `${pos.x-15}px`; // Add an offset for better visibility
+  document.getElementById('distanceMarker').style.top = `${pos.y-10}px`; 
+  var closeI = curCoords.indexOf(closest)
+  curCoords.splice(closeI+1)
+  var linestring = {
+        "type": "Feature",
+        "geometry": {
+            "type": "LineString",
+            "coordinates": curCoords
+        }
+    };
+    var dist = Math.round(1.0*(turf.lineDistance(linestring)*3280.84/5280)*Math.pow(10,2))/Math.pow(10,2);
+    document.getElementById("distanceMarker").innerHTML =dist;
+});
+
 map.on('click', function(e){
     if (clickOrder.length!=1){
         return;
@@ -377,6 +466,10 @@ map.on('click', function(e){
     curCoords.push(runs[clickOrder[0]][2].features[0].geometry.coordinates[0][i])
  }
  var closest = findClosestPoint(runs[clickOrder[0]][2].features[0].geometry.coordinates[0],point);
+ if (closest==null){
+    document.getElementById("distanceMarker").style.display = 'none'
+    return
+ }
  var pos = map.project(new mapboxgl.LngLat(closest[0], closest[1]));
  document.getElementById("distanceMarker").style.display = 'block';
   document.getElementById('distanceMarker').style.left = `${pos.x-15}px`; // Add an offset for better visibility
@@ -401,6 +494,38 @@ map.on('click', function(e){
     return Math.sqrt(Math.pow(vector[0],2)+Math.pow(vector[1],2));
  }
 
+
+ document.addEventListener('keydown', handleArrowKeys);
+
+function handleArrowKeys(event){
+    console.log(clickOrder[0])
+    console.log(runs.length)
+    if (!curSingle){
+        return;
+    }
+      if (event.key === 'ArrowUp') {
+            if (clickOrder[0]==0){
+                doShow(runs.length)
+                document.getElementById("RouteTable").scrollTop = document.getElementById("RouteTable").scrollHeight;
+            }
+            else{
+                doShow(clickOrder[0])
+            }
+            
+      } 
+      if (event.key == 'ArrowDown'){
+        if (clickOrder[0]==runs.length-1){
+                doShow(1);
+                document.getElementById("RouteTable").scrollTop = '0';
+            }
+            else{
+                doShow(clickOrder[0]+2)
+            }
+      }
+    }
+    
+  
+
 function findClosestPoint(coords,point){
     var closestPt = coords[0];
     var closestVec =[Math.abs(365214.666667*Math.cos((Math.PI/180)*coords[0][1])*(coords[0][0]-point[0])),Math.abs(365214.666667 *(coords[0][1]-point[1]))];
@@ -414,9 +539,14 @@ function findClosestPoint(coords,point){
             closestPt = coords[i];
         }
     }
+    console.log(getMagnitude(closestVec))
+    if (getMagnitude(closestVec)>250){
+        return null;
+    }
     return closestPt;
 }
     
+
 
     var table = document.getElementById("routes")
     var row;
@@ -507,7 +637,10 @@ function reverseArray(arr) {
         showingInfo=true;
       var clickedRow = event.target.parentElement;
     var index = Array.from(clickedRow.parentNode.children).indexOf(clickedRow);
-        
+    doShow(index)
+    }
+
+    function doShow(index){
         if (document.getElementById("routes").rows[index].cells[0].style.backgroundColor =="black"){
             map.setLayoutProperty(runs[index-1][0], 'visibility', 'none');
             document.getElementById("routes").rows[index].cells[0].style.backgroundColor = '#C21807'
@@ -540,7 +673,6 @@ function reverseArray(arr) {
               }
             clickOrder.push(index-1)
         }
-
     }
 
     function showInfo(rowIndex){
