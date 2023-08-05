@@ -624,7 +624,7 @@ function handleDist2earch(event){
     }
     var change = false;
     for (var i=0; i<runs.length; i++){
-        if (runs[i][0].substring(0,text.length)==text && runs[i][1]>dist[0] && runs[i][1]<dist[1]){
+        if (runs[i][0].substring(0,text.length).toUpperCase()==text.toUpperCase() && runs[i][1]>dist[0] && runs[i][1]<dist[1]){
             change = true;
         }
     }
@@ -648,7 +648,7 @@ function handleDist2earch(event){
       table.deleteRow(1);
     }
     for (var i=0; i<runs.length; i++){
-        if (runs[i][0].substring(0,text.length)==text && runs[i][1]>dist[0] && runs[i][1]<dist[1]){
+        if (runs[i][0].substring(0,text.length).toUpperCase()==text.toUpperCase() && runs[i][1]>dist[0] && runs[i][1]<dist[1]){
 
         row = table.insertRow();
         for (var j = 0; j<2; j++){
