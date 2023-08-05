@@ -22,7 +22,7 @@
       bottom: 0px;
       left: 0px;
       width: 22%;
-      min-width: 220px;
+      min-width: 240px;
       height: 100%;
       background-color: white;
       padding: 10px;
@@ -39,7 +39,7 @@
       bottom: 0px;
       left: 0px;
       width: 22%;
-      min-width: 220px;
+      min-width: 240px;
       height: 100%;
       background-color: white;
       padding: 5px;
@@ -49,15 +49,56 @@
       z-index: 1;
     border: 1px solid black;
     }
+    #search{
+        top: 25px;
+        left: 20%;
+        height: 20px;
+        width: 33%;
+        font-size: 13px;
+    }
+    #searchLabel{
+        top: 22px;
+        height: 20px;
+        left: 0%;
+        width: 18%;
+        font-size: 13px;
+    }
+    #distanceLabel{
+        top: 22px;
+        height: 20px;
+        left: 55%;
+        width: 12%;
+        font-size: 13px;
+    }
+    #dist1{
+        top: 25px;
+        left: 69%;
+        height: 20px;
+        width: 13%;
+        font-size: 13px;
+    }
+    #distDash{
+        top: 25px;
+        left: 83%;
+        height: 20px;
+        width: .5%;
+    }
+    #dist2{
+        top: 25px;
+        left: 87%;
+        height: 20px;
+        width: 12%;
+        font-size: 13px;
+    }
     .frozen-header {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 50px; /* Set the height of the frozen header */
+  height: 70px; /* Set the height of the frozen header */
   background-color: #f0f0f0;
   border-bottom: 1px solid #ccc;
-  padding: 10px;
+  padding: 2px;
   box-sizing: border-box;
   z-index: 2;
 }
@@ -65,7 +106,7 @@
   overflow-y: scroll;
   width: 100%;
   height: 100%; /* Subtract the height of the frozen header */
-  padding-top: 55px !important; /* Add a padding to move the scrollable content below the frozen header */
+  padding-top: 75px !important; /* Add a padding to move the scrollable content below the frozen header */
   padding: 5px;
   padding-bottom: 0px !important;
   box-sizing: border-box;
@@ -75,7 +116,7 @@
         text-align: center;
       position: absolute;
       top: 0px;
-      left: max(22%, 220px);
+      left: max(22%, 240px);
       
       width: max(15%, 210px);
       height: auto;
@@ -109,7 +150,7 @@ table {
     size: fixed;
     width: 155px;
   bottom: 10px;
-  left: max(23%, 230px);
+  left: max(23%, 250px);
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -121,7 +162,7 @@ table {
     position: fixed;
     width: 155px;
   bottom: 55px;
-  left: max(23%, 230px);
+  left: max(23%, 250px);
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -237,6 +278,18 @@ th, td {
       z-index: 1;
     border: 1px solid black;
     }
+    #error-message {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: red;
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+  z-index: 5;
+}
 
 
     /*
@@ -369,6 +422,13 @@ width: 17%;
   <div class="scrollable-container" id ="RouteTable">
     <div class="frozen-header">
         <h1>Wes XC Runs</h1>
+        <label id ="searchLabel">Name:</label>
+        <input type="text" id="search" name="search" onkeydown="handleNameSearch(event)" oninput="search(event)"> 
+        <label id ="distanceLabel">Dist:</label>
+        <input type="text" id="dist1" name="dist1" onkeydown="handleDist1Search(event)" oninput="search(event)"> 
+        <label id ="distDash">-</label>
+        <input type="text" id="dist2" name="dist2" onkeydown="handleDist2Search(event)" oninput="search(event)"> 
+
         <button class="close-button" id ="hide" onclick = "hideTable()">&#8592;</button>
     </div>
     <div class="scrollable-content">
@@ -381,7 +441,7 @@ width: 17%;
         </table> 
     </div>
   </div>
-  
+  <div id="error-message"></div>
   <div id = "distanceMarker"></div>
   <div id = showInfoDiv>
     <div id = "showInfoDivText"></div>
@@ -390,6 +450,7 @@ width: 17%;
  
 
   <script>
+
     var clickOrder = new Array(0);
     var curSingle = true;
     var isSatellite=true;
@@ -403,6 +464,9 @@ width: 17%;
       zoom: 14 // Initial zoom level
     });
 
+    document.getElementById("dist1").value =""
+        document.getElementById("dist2").value =""
+        document.getElementById("search").value =""
     map.on('load', function() {
         for (var i=0; i<runs.length; i++){
             addLayer(runs[i][2].features[0].geometry.coordinates[0],runs[i][0],"blue")
@@ -425,7 +489,6 @@ map.on('mousemove', (e) => {
   if (clickOrder.length!=1){
         return;
     }
-    //console.log(runs[clickOrder[0]])
 
  var point = [map.unproject(e.point).lng,map.unproject(e.point).lat];
  var curCoords = new Array(0);
@@ -458,7 +521,6 @@ map.on('click', function(e){
     if (clickOrder.length!=1){
         return;
     }
-    //console.log(runs[clickOrder[0]])
     var x = map.unproject(e.point).lng;
  var y = map.unproject(e.point).lat;
  var point = [map.unproject(e.point).lng,map.unproject(e.point).lat];
@@ -499,8 +561,6 @@ map.on('click', function(e){
  document.addEventListener('keydown', handleArrowKeys);
 
 function handleArrowKeys(event){
-    console.log(clickOrder[0])
-    console.log(runs.length)
     if (!curSingle){
         return;
     }
@@ -523,9 +583,106 @@ function handleArrowKeys(event){
                 doShow(clickOrder[0]+2)
             }
       }
+      if (event.key == 'ArrowLeft'){
+        //console.log(getTableIndex(clickOrder[0]))
+      }
     }
-    
-  
+
+    var searchFields = ["","",""]
+function handleNameSearch(event){
+    searchFields[0] = document.getElementById(event.target.id).value
+}
+
+function handleDist1Search(event){
+    searchFields[1] = document.getElementById(event.target.id).value
+}
+function handleDist2earch(event){
+   searchFields[2] = document.getElementById(event.target.id).value
+}
+
+  function search(event){
+    var source = document.getElementById(event.target.id);
+    var text = document.getElementById("search").value;
+    var d1 = document.getElementById("dist1").value;
+    var dist = new Array(0)
+    var d2 = document.getElementById("dist2").value;
+    if (!isNaN(parseFloat(d1)) && !isNaN(parseFloat(d2))){
+        dist.push(parseFloat(d1))
+        dist.push(parseFloat(d2))
+    }
+    else if (!isNaN(parseFloat(d1)) && isNaN(parseFloat(d2))){
+        dist.push(parseFloat(d1))
+        dist.push(100)
+    }
+    else if (isNaN(parseFloat(d1)) && !isNaN(parseFloat(d2))){
+        dist.push(0)
+        dist.push(parseFloat(d2))
+    }
+    else{
+        dist.push(0)
+        dist.push(100)
+    }
+    var change = false;
+    for (var i=0; i<runs.length; i++){
+        if (runs[i][0].substring(0,text.length)==text && runs[i][1]>dist[0] && runs[i][1]<dist[1]){
+            change = true;
+        }
+    }
+    if (!change){
+        if (source.id == "search"){
+            source.value = searchFields[0]
+        }
+        if (source.id == "dist1"){
+            source.value = searchFields[1]
+        }
+        if (source.id == "dist2"){
+            source.value = searchFields[2]
+        }
+        printError("No trails match those specifications")
+        return;
+    }
+
+    var table = document.getElementById("routes");
+    var row;
+    while (table.rows.length > 1) {
+      table.deleteRow(1);
+    }
+    for (var i=0; i<runs.length; i++){
+        if (runs[i][0].substring(0,text.length)==text && runs[i][1]>dist[0] && runs[i][1]<dist[1]){
+
+        row = table.insertRow();
+        for (var j = 0; j<2; j++){
+            row.insertCell();
+        }
+        row.cells[0].innerHTML = runs[i][0]
+        row.cells[1].innerHTML = runs[i][1]+"";
+        row.cells[0].addEventListener("click", show);
+        row.cells[1].addEventListener("click", show);
+        for (var j=0; j<clickOrder.length; j++){
+            if (clickOrder[j]==i){
+                row.cells[0].style.backgroundColor = "black";
+                row.cells[1].style.backgroundColor = "black";
+                continue;
+            }
+        }
+        if (row.cells[0].style.backgroundColor!="black"){
+            row.cells[0].style.backgroundColor = "#C21807";
+        row.cells[1].style.backgroundColor = '#C21807';
+        } 
+        row.cells[0].style.color = "white";
+        row.cells[1].style.color = 'white';
+        }
+    }
+  }
+
+  function getTableIndex(runsIndex){
+    var rows = document.getElementById("routes").rows;
+    for (var i=0; i<rows.length; i++){
+        if (rows[i].cells[0].innerHTML==runs[runsIndex][0]){
+            return i;
+        }
+    }
+  }
 
 function findClosestPoint(coords,point){
     var closestPt = coords[0];
@@ -540,7 +697,6 @@ function findClosestPoint(coords,point){
             closestPt = coords[i];
         }
     }
-    console.log(getMagnitude(closestVec))
     if (getMagnitude(closestVec)>250){
         return null;
     }
@@ -637,16 +793,23 @@ function reverseArray(arr) {
         document.getElementById("distanceMarker").style.display = 'none'
         showingInfo=true;
       var clickedRow = event.target.parentElement;
-    var index = Array.from(clickedRow.parentNode.children).indexOf(clickedRow);
-    doShow(index)
+    var tableIndex = Array.from(clickedRow.parentNode.children).indexOf(clickedRow);
+    var runsIndex;
+    for (var i=0; i<runs.length; i++){
+        if (runs[i][0]==document.getElementById("routes").rows[tableIndex].cells[0].innerHTML){
+            runsIndex=i;
+        }
+
+    }
+    doShow([runsIndex,tableIndex])
     }
 
-    function doShow(index){
-        if (document.getElementById("routes").rows[index].cells[0].style.backgroundColor =="black"){
-            map.setLayoutProperty(runs[index-1][0], 'visibility', 'none');
-            document.getElementById("routes").rows[index].cells[0].style.backgroundColor = '#C21807'
-            document.getElementById("routes").rows[index].cells[1].style.backgroundColor = '#C21807'
-            clickOrder.splice(clickOrder.indexOf(index-1),1)
+    function doShow(indices){
+        if (document.getElementById("routes").rows[indices[1]].cells[0].style.backgroundColor =="black"){
+            map.setLayoutProperty(runs[indices[0]][0], 'visibility', 'none');
+            document.getElementById("routes").rows[indices[1]].cells[0].style.backgroundColor = '#C21807'
+            document.getElementById("routes").rows[indices[1]].cells[1].style.backgroundColor = '#C21807'
+            clickOrder.splice(clickOrder.indexOf(indices[0]),1)
             if (clickOrder.length==0){
               document.getElementById("showInfoDiv").style.display = 'none'
             }
@@ -659,20 +822,27 @@ function reverseArray(arr) {
            
         }
         else{
-            map.setLayoutProperty(runs[index-1][0], 'visibility', 'visible');
-            if (getMagnitude([map.getCenter().lng-runs[index-1][2].features[0].geometry.coordinates[0][0][0],map.getCenter().lat-runs[index-1][2].features[0].geometry.coordinates[0][0][1]])>.02){
-                map.setCenter(runs[index-1][2].features[0].geometry.coordinates[0][0]);
+            map.setLayoutProperty(runs[indices[0]][0], 'visibility', 'visible');
+            if (getMagnitude([map.getCenter().lng-runs[indices[0]][2].features[0].geometry.coordinates[0][0][0],map.getCenter().lat-runs[indices[0]][2].features[0].geometry.coordinates[0][0][1]])>.02){
+                map.setCenter(runs[indices[0]][2].features[0].geometry.coordinates[0][0]);
             }
-            document.getElementById("routes").rows[index].cells[0].style.backgroundColor = "black"
-            document.getElementById("routes").rows[index].cells[1].style.backgroundColor = "black"
-            showInfo(index)
+            document.getElementById("routes").rows[indices[1]].cells[0].style.backgroundColor = "black"
+            document.getElementById("routes").rows[indices[1]].cells[1].style.backgroundColor = "black"
+            showInfo(indices[1])
+
             if (curSingle && clickOrder.length!=0){
+                for (var i=0; i<document.getElementById("routes").rows.length; i++){
+                    //console.log(document.getElementById("routes").rows[i].cells[0].innerHTML)
+                  if (document.getElementById("routes").rows[i].cells[0].innerHTML==runs[clickOrder[0]][0]){
+                    document.getElementById("routes").rows[getTableIndex(clickOrder[0])].cells[0].style.backgroundColor = '#C21807'
+                    document.getElementById("routes").rows[getTableIndex(clickOrder[0])].cells[1].style.backgroundColor = '#C21807'
+                     break;
+                    }
+                }
                 map.setLayoutProperty(runs[clickOrder[0]][0], 'visibility', 'none');
-              document.getElementById("routes").rows[clickOrder[0]+1].cells[0].style.backgroundColor = '#C21807'
-              document.getElementById("routes").rows[clickOrder[0]+1].cells[1].style.backgroundColor = '#C21807'
-              clickOrder = new Array(0)
+                clickOrder = new Array(0)
               }
-            clickOrder.push(index-1)
+            clickOrder.push(indices[0])
         }
     }
 
@@ -694,8 +864,8 @@ function reverseArray(arr) {
         if (clickOrder.length!=0 && showingInfo){
             document.getElementById("showInfoDiv").style.display = 'block'
         }
-        document.getElementById("toggleSelect").style.left = 'max(23%, 230px)'
-        document.getElementById("toggleSat").style.left = 'max(23%, 230px)'
+        document.getElementById("toggleSelect").style.left = 'max(23%, 250px)'
+        document.getElementById("toggleSat").style.left = 'max(23%, 250px)'
         document.getElementById("toggleSelect").style.bottom = '55px';
         document.getElementById("toggleSat").style.bottom = '10px';
 
@@ -720,8 +890,8 @@ function reverseArray(arr) {
         if (clickOrder.length>0){
           for (var i=0; i<clickOrder.length-1; i++){
           map.setLayoutProperty(runs[clickOrder[i]][0], 'visibility', 'none');
-            document.getElementById("routes").rows[clickOrder[i]+1].cells[0].style.backgroundColor = '#C21807'
-            document.getElementById("routes").rows[clickOrder[i]+1].cells[1].style.backgroundColor = '#C21807'
+            document.getElementById("routes").rows[getTableIndex(clickOrder[i])].cells[0].style.backgroundColor = '#C21807'
+            document.getElementById("routes").rows[getTableIndex(clickOrder[i])].cells[1].style.backgroundColor = '#C21807'
         }
         clickOrder[0] = clickOrder[clickOrder.length-1]
         clickOrder.splice(1)
@@ -733,7 +903,15 @@ function reverseArray(arr) {
       }
     }
 
-   
+    function printError(message){
+    var errorMessage = document.getElementById('error-message');
+  errorMessage.innerText = message;
+  errorMessage.style.display = 'block';
+
+  setTimeout(function() {
+    errorMessage.style.display = 'none';
+  }, 3000); // Display for 3 seconds (3000 milliseconds)
+}
 
 
 
