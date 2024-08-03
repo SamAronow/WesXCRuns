@@ -386,7 +386,7 @@ function toggleSelect(){
       }
 }
 
-commentsOn=false
+commentsOn=true
 function toggleComments(){
     if (document.getElementById("toggleComments").textContent == "Comments: On"){
         document.getElementById("toggleComments").textContent = "Comments: Off"
