@@ -33,6 +33,8 @@
 
   <button class = "toggleButtton" id="toggleSat" onclick = "toggleSatellite()">View Streets</button>
   <button class = "toggleButtton" id="toggleSelect" onclick = "toggleSelect()">Use Multi Select</button>
+  <button class = "toggleButtton" id="toggleComments" onclick = "toggleComments()">Comments: On</button>
+
   <button id ="show" onclick = "showTable()">&#8594;</button>
 
   <div class="scrollable-container" id ="RouteTable">
@@ -48,7 +50,7 @@
         <button class="close-button" id ="hide" onclick = "hideTable()">&#8592;</button>
     </div>
 
-    <div class="scrollable-content">
+    <div class="scrollable-content" id ="innerRouteTable">
         <table id = "routes">
             <tr>
               <th>Name</th>

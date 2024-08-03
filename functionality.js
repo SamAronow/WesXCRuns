@@ -1,9 +1,10 @@
-var clickOrder = new Array(0);
-var curSingle = true;
-var isSatellite=true;
-var showingInfo = true;
+/*----------------------------------------------------------------------------------------------------------------------------*/
+/*Set up map instructions*/
+
+//set up mapbox token for my account
 mapboxgl.accessToken = 'pk.eyJ1Ijoic2FtYXJudyIsImEiOiJjbGl1c2F1dDAwOW02M3BueTJwdDViNHY4In0.5F8W4nYLQk7H0xjRONCGkw'; // Replace with your Mapbox access token
 
+//instantiate my map with prefered settings
 var map = new mapboxgl.Map({
     container: 'map', // Container ID
     style: 'mapbox://styles/mapbox/satellite-streets-v11', // Mapbox Satellite Streets style
@@ -11,46 +12,54 @@ var map = new mapboxgl.Map({
     zoom: 14 // Initial zoom level
 });
 
-document.getElementById("dist1").value =""
-document.getElementById("dist2").value =""
-document.getElementById("search").value =""
+//when the map loads in get runs from routes.js. add them as a layer and make them invisible until selected
 map.on('load', function() {
     for (var i=0; i<runs.length; i++){
-        addLayer(runs[i][2].features[0].geometry.coordinates[0],runs[i][0],"blue")
+        addLayer(runs[i][2].features[0].geometry.coordinates[0],runs[i][0], "#C21807")
         map.setLayoutProperty(runs[i][0], 'visibility', 'none');
     }
 }
 );
 
+//when you drag or wheel off a route remove the distance marker from the screen
 map.on('drag', () => {
     document.getElementById("distanceMarker").style.display = 'none'
 });
-
 map.on('wheel', () => {
     document.getElementById("distanceMarker").style.display = 'none'
 });
 
+//when the mouse moves properly adjust the distance marker
 map.on('mousemove', (e) => {
+    //only do this for single run selected
+    if (clickOrder.length != 1){
+        return;
+    }
+    //get the coordinates of the mouse movement
     const x = e.lngLat.lng.toFixed(6); // Round the longitude to 6 decimal places
     const y = e.lngLat.lat.toFixed(6); // Round the latitude to 6 decimal places
-    if (clickOrder.length!=1){
-        return;
-    }
+    var point = [map.unproject(e.point).lng,map.unproject(e.point).lat];
 
+    //take all its coordaintes and put it in the array curCoords
     var point = [map.unproject(e.point).lng,map.unproject(e.point).lat];
     var curCoords = new Array(0);
     for (var i=0; i<runs[clickOrder[0]][2].features[0].geometry.coordinates[0].length; i++){
         curCoords.push(runs[clickOrder[0]][2].features[0].geometry.coordinates[0][i])
     }
-    var closest = findClosestPoint(runs[clickOrder[0]][2].features[0].geometry.coordinates[0],point);
-    if (closest==null){
+    //use function findClosestPoint to take the coordinates array of the selected run and the moved to point
+    var closest = findClosestPoint(runs[clickOrder[0]][2].features[0].geometry.coordinates[0], point);
+    //if there's no coordinate in vecinity of mouse then turn off the distance marker
+    if (closest == null){
         document.getElementById("distanceMarker").style.display = 'none'
         return;
     }
+    //if there was a close point that turn on the distance marker and put it at the closest point
     var pos = map.project(new mapboxgl.LngLat(closest[0], closest[1]));
     document.getElementById("distanceMarker").style.display = 'block';
     document.getElementById('distanceMarker').style.left = `${pos.x-15}px`; // Add an offset for better visibility
     document.getElementById('distanceMarker').style.top = `${pos.y-10}px`; 
+    //find index of the close point and then take the run upto that coordiante and use turf to find the distance
+    //of that run which is distance to that point to add to the distance marker
     var closeI = curCoords.indexOf(closest)
     curCoords.splice(closeI+1)
     var linestring = {
@@ -60,97 +69,123 @@ map.on('mousemove', (e) => {
              "coordinates": curCoords
         }
     };
+    //convert dist to miles
     var dist = Math.round(1.0*(turf.lineDistance(linestring)*3280.84/5280)*Math.pow(10,2))/Math.pow(10,2);
-    document.getElementById("distanceMarker").innerHTML =dist;
+    document.getElementById("distanceMarker").innerHTML = dist;
 });
 
-map.on('click', function(e){
-    if (clickOrder.length!=1){
-        return;
-    }
-    var x = map.unproject(e.point).lng;
-    var y = map.unproject(e.point).lat;
-    var point = [map.unproject(e.point).lng,map.unproject(e.point).lat];
-    var curCoords = new Array(0);
-    for (var i=0; i<runs[clickOrder[0]][2].features[0].geometry.coordinates[0].length; i++){
-        curCoords.push(runs[clickOrder[0]][2].features[0].geometry.coordinates[0][i])
-    }
-    var closest = findClosestPoint(runs[clickOrder[0]][2].features[0].geometry.coordinates[0],point);
-    if (closest==null){
-        document.getElementById("distanceMarker").style.display = 'none'
-    return
-    }
-    var pos = map.project(new mapboxgl.LngLat(closest[0], closest[1]));
-    document.getElementById("distanceMarker").style.display = 'block';
-    document.getElementById('distanceMarker').style.left = `${pos.x-15}px`; // Add an offset for better visibility
-    document.getElementById('distanceMarker').style.top = `${pos.y-10}px`; 
-    var closeI = curCoords.indexOf(closest)
-    curCoords.splice(closeI+1)
-    var linestring = {
-        "type": "Feature",
-        "geometry": {
-             "type": "LineString",
-             "coordinates": curCoords
-        }
-    };
-    var dist = Math.round(1.0*(turf.lineDistance(linestring)*3280.84/5280)*Math.pow(10,2))/Math.pow(10,2);
-    document.getElementById("distanceMarker").innerHTML =dist;
-});
+/*Done setting up map instructions*/
+/*----------------------------------------------------------------------------------------------------------------------------*/
+/*Instantiate variables*/
 
-function getMagnitude(vector) {
-    return Math.sqrt(Math.pow(vector[0],2)+Math.pow(vector[1],2));
- }
+/*
+- ClickOrder stores the order in which multi select routes were selected to know which to deselect and such when it's turned off. 
+- curSingle stores whether it's in single select or multi select mode
+- isSatellite stores whether its in sattellite mode
+- showingInfo stores whether the comments box is on or whether
+- clear the values of the search fields
+- create an empty array to store values of the fields
+*/
+var clickOrder = new Array(0);
+var curSingle = true;
+var isSatellite=true;
+var showingInfo = true;
+document.getElementById("dist1").value =""
+document.getElementById("dist2").value =""
+document.getElementById("search").value =""
+var searchFields = ["","",""]
+
+/*start the page my turning on the popup and define the close popup for exiting it*/
+function showPopup() {
+    overlay.style.display = 'block';
+     popup.style.display = 'block';
+}
+//
+function closePopup() {
+    overlay.style.display = 'none';
+    popup.style.display = 'none';
+}
+var overlay = document.getElementById('overlay');
+var popup = document.getElementById('popup');
+window.onload = showPopup;
+/*finish setting up the pop up stuff*/
+
+/*set up the route table with buttons*/
+var table = document.getElementById("routes")
+var row;
+var cell;
+for (var i=0; i<runs.length; i++){
+    row = table.insertRow();
+    for (var j = 0; j<2; j++){
+        row.insertCell();
+    }
+    row.cells[0].innerHTML = runs[i][0]
+    row.cells[1].innerHTML = runs[i][1]+"";
+    row.cells[0].addEventListener("click", show);
+    row.cells[1].addEventListener("click", show);
+    row.cells[0].style.backgroundColor = "#C21807";
+    row.cells[1].style.backgroundColor = '#C21807';
+    row.cells[0].style.color = "white";
+    row.cells[1].style.color = 'white';
+}
+
+/*Done Instantiating variables*/
+/*----------------------------------------------------------------------------------------------------------------------------*/
+/*Create event listeners*/
 
 document.addEventListener('keydown', handleArrowKeys);
 
+//handle arrows to move around in run select
 function handleArrowKeys(event){
+    console.log(clickOrder)
     if (!curSingle){
         return;
     }
-      if (event.key === 'ArrowUp') {
+        if (event.key === 'ArrowUp') {
             if (clickOrder[0]==0){
-                //doShow(runs.length)
-               // document.getElementById("RouteTable").scrollTop = document.getElementById("RouteTable").scrollHeight;
+                event.preventDefault();
+                document.getElementById("innerRouteTable").scrollTop = document.getElementById("innerRouteTable").scrollHeight+100;
             }
             else{
                 doShow([clickOrder[0]-1,getTableIndex(clickOrder[0]-1)])
-            }
-            
+            } 
       } 
       if (event.key == 'ArrowDown'){
         if (clickOrder[0]==runs.length-1){
-                doShow(1);
-                document.getElementById("RouteTable").scrollTop = '0';
+                event.preventDefault();
+                console.log(clickOrder)
+                doShow([0,1])
+                document.getElementById("innerRouteTable").scrollTop = 0;
             }
             else{
                 doShow([clickOrder[0]+1,getTableIndex(clickOrder[0]+1)])
             }
       }
-      if (event.key == 'ArrowLeft'){
-        //console.log(getTableIndex(clickOrder[0]))
-      }
-    }
+}
 
-var searchFields = ["","",""]
-
+/*save the values of the searches at beginning of the event to be able to restore if needed*/
 function handleNameSearch(event){
     searchFields[0] = document.getElementById(event.target.id).value
 }
-
 function handleDist1Search(event){
     searchFields[1] = document.getElementById(event.target.id).value
 }
-
 function handleDist2earch(event){
    searchFields[2] = document.getElementById(event.target.id).value
 }
+/*done saving the values*/
 
+//handle a serach event
 function search(event){
+    //find the field that got changed and get values of every field
     var source = document.getElementById(event.target.id);
     var text = document.getElementById("search").value;
     var d1 = document.getElementById("dist1").value;
-    var dist = new Array(0)
     var d2 = document.getElementById("dist2").value;
+
+    //create an array to get the values of the upper and lower bound if they're entered
+    //if not then set them to a defined upper and lower bound
+    var dist = new Array(0)
     if (!isNaN(parseFloat(d1)) && !isNaN(parseFloat(d2))){
         dist.push(parseFloat(d1))
         dist.push(parseFloat(d2))
@@ -167,13 +202,18 @@ function search(event){
         dist.push(0)
         dist.push(100)
     }
-    var change = false;
+    /*done getting the thresholds*/
+
+    //see if any routes match the description
+    var match = false;
     for (var i=0; i<runs.length; i++){
         if (runs[i][0].substring(0,text.length).toUpperCase()==text.toUpperCase() && runs[i][1]>dist[0] && runs[i][1]<dist[1]){
-            change = true;
+            match = true;
         }
     }
-    if (!change){
+
+    //if not then reset the fields to before the search and print error to the screen
+    if (!match){
         if (source.id == "search"){
             source.value = searchFields[0]
         }
@@ -186,7 +226,9 @@ function search(event){
         printError("No trails match those specifications")
         return;
     }
+    /*done with reset*/
 
+    //take the table and clear it out and then if any run matches the thresholds then add it back
     var table = document.getElementById("routes");
     var row;
     while (table.rows.length > 1) {
@@ -203,6 +245,7 @@ function search(event){
         row.cells[1].innerHTML = runs[i][1]+"";
         row.cells[0].addEventListener("click", show);
         row.cells[1].addEventListener("click", show);
+        //if there's click than re add the clicked runs
         for (var j=0; j<clickOrder.length; j++){
             if (clickOrder[j]==i){
                 row.cells[0].style.backgroundColor = "black";
@@ -212,126 +255,13 @@ function search(event){
         }
         if (row.cells[0].style.backgroundColor!="black"){
             row.cells[0].style.backgroundColor = "#C21807";
-        row.cells[1].style.backgroundColor = '#C21807';
+            row.cells[1].style.backgroundColor = '#C21807';
         } 
         row.cells[0].style.color = "white";
         row.cells[1].style.color = 'white';
         }
     }
   }
-
-  function getTableIndex(runsIndex){
-    var rows = document.getElementById("routes").rows;
-    for (var i=0; i<rows.length; i++){
-        if (rows[i].cells[0].innerHTML==runs[runsIndex][0]){
-            return i;
-        }
-    }
-  }
-
-function findClosestPoint(coords,point){
-    var closestPt = coords[0];
-    var closestVec =[Math.abs(365214.666667*Math.cos((Math.PI/180)*coords[0][1])*(coords[0][0]-point[0])),Math.abs(365214.666667 *(coords[0][1]-point[1]))];
-    var curVec;
-    var closestI=0;
-    for (var i =1; i<coords.length; i++){
-        curVec =[Math.abs(365214.666667*Math.cos((Math.PI/180)*coords[i][1])*(coords[i][0]-point[0])),Math.abs(365214.666667 *(coords[i][1]-point[1]))];
-        if (getMagnitude(curVec)<getMagnitude(closestVec)){
-            closestVec = curVec;
-            closestI=i;
-            closestPt = coords[i];
-        }
-    }
-    if (getMagnitude(closestVec)>250){
-        return null;
-    }
-    return closestPt;
-}
-    
-
-
-    var table = document.getElementById("routes")
-    var row;
-    var cell;
-    //var button;
-    for (var i=0; i<runs.length; i++){
-        row = table.insertRow();
-        for (var j = 0; j<2; j++){
-            row.insertCell();
-        }
-        row.cells[0].innerHTML = runs[i][0]
-        row.cells[1].innerHTML = runs[i][1]+"";
-        row.cells[0].addEventListener("click", show);
-        row.cells[1].addEventListener("click", show);
-        row.cells[0].style.backgroundColor = "#C21807";
-        row.cells[1].style.backgroundColor = '#C21807';
-        if (!runs[i][3].includes("Comments: </p>")){
-            row.cells[0].style.color = "white";
-        row.cells[1].style.color = 'white';
-        }
-        else{
-            row.cells[0].style.color = "blue";
-         row.cells[1].style.color = "blue";
-        }
-    }
-
-var overlay = document.getElementById('overlay');
-var popup = document.getElementById('popup');
-    
-function showPopup() {
-    overlay.style.display = 'block';
-     popup.style.display = 'block';
-}
-
-function closePopup() {
-    overlay.style.display = 'none';
-    popup.style.display = 'none';
-}
-window.onload = showPopup;
-
-
-
-function toggleSatellite() { 
-    for (var i = 0; i < runs.length; i++) {
-        map.removeLayer(runs[i][0]);
-        map.removeSource(runs[i][0]);
-    }
-
-    if (!isSatellite) {
-        document.getElementById("show").style.color = "white"
-        map.setStyle('mapbox://styles/mapbox/satellite-streets-v11');
-        isSatellite = true;
-        document.getElementById("toggleSat").textContent= "View Streets"
-    } 
-    else {
-        map.setStyle('mapbox://styles/mapbox/streets-v11');
-        document.getElementById("show").style.color = "black"
-        document.getElementById("toggleSat").textContent= "View Satellite"
-        isSatellite = false;
-  }
-
-map.on('style.load', function () {
-    for (var i = 0; i < runs.length; i++) {
-        addLayer(runs[i][2].features[0].geometry.coordinates[0], runs[i][0], "blue");
-        map.setLayoutProperty(runs[i][0], 'visibility', 'none');
-        for (var j=0; j<clickOrder.length; j++){
-            if (clickOrder[j]==i){
-                map.setLayoutProperty(runs[i][0], 'visibility', 'visible');
-            }
-        }
-    }
-  });
-}
-
-function reverseArray(arr) {
-    var reversedArr = [];
-    for (var i = arr.length - 1; i >= 0; i--) {
-        reversedArr.push(arr[i]);
-    }
-    return reversedArr;
-}
-
-
 
 
 function show(event){
@@ -348,6 +278,210 @@ function show(event){
     doShow([runsIndex,tableIndex])
 }
 
+/*Done With Event handling*/
+/*----------------------------------------------------------------------------------------------------------------------------*/
+/*Start showing and hiding html visibilities*/
+
+function showInfo(runIndex){
+    document.getElementById("showInfoDivText").innerHTML = runs[runIndex][3];
+    if (!commentsOn){
+        return
+    }
+    document.getElementById("showInfoDiv").style.display = 'block'
+    document.getElementById('infoClose').style.display = 'block'
+}
+
+function closeInfo() {
+    document.getElementById("showInfoDiv").style.display = "none";
+    showingInfo = false;
+}
+
+function showTable(){
+    document.getElementById("show").style.display = 'none';
+    document.getElementById("hide").style.display = 'block';
+    document.getElementById("RouteTable").style.display = 'block';
+        
+    if (clickOrder.length!=0 && showingInfo){
+        if (commentsOn){
+            document.getElementById("showInfoDiv").style.display = 'block'
+
+        }
+    }
+    document.getElementById("toggleSelect").style.left = 'max(23%, 250px)'
+    document.getElementById("toggleSat").style.left = 'max(23%, 250px)'
+    document.getElementById("toggleSelect").style.bottom = '55px';
+    document.getElementById("toggleSat").style.bottom = '10px';
+}
+
+function hideTable(){
+    document.getElementById("show").style.display = 'block';
+    document.getElementById("hide").style.display = 'none';
+    document.getElementById("RouteTable").style.display = 'none';
+    document.getElementById("showInfoDiv").style.display = 'none'
+    document.getElementById("toggleSelect").style.left = '8px';
+    document.getElementById("toggleSat").style.left = '8px';
+    document.getElementById("toggleSelect").style.bottom = '75px';
+    document.getElementById("toggleSat").style.bottom = '30px';
+}
+
+/*Done hiding and showing html stuff*/
+/*----------------------------------------------------------------------------------------------------------------------------*/
+/*Do toggles*/
+
+//toggle the Sattellite
+function toggleSatellite() { 
+    //remove all the layers
+    for (var i = 0; i < runs.length; i++) {
+        map.removeLayer(runs[i][0]);
+        map.removeSource(runs[i][0]);
+    }
+    //change the setting of satelitte
+    if (!isSatellite) {
+        document.getElementById("show").style.color = "white"
+        map.setStyle('mapbox://styles/mapbox/satellite-streets-v11');
+        isSatellite = true;
+        document.getElementById("toggleSat").textContent= "View Streets"
+    } 
+    else {
+        map.setStyle('mapbox://styles/mapbox/streets-v11');
+        document.getElementById("show").style.color = "black"
+        document.getElementById("toggleSat").textContent= "View Satellite"
+        isSatellite = false;
+    }
+
+    //when the style loads add the runs back
+    map.on('style.load', function () {
+    for (var i = 0; i < runs.length; i++) {
+        addLayer(runs[i][2].features[0].geometry.coordinates[0], runs[i][0], "#C21807");
+        map.setLayoutProperty(runs[i][0], 'visibility', 'none');
+        for (var j=0; j<clickOrder.length; j++){
+            if (clickOrder[j]==i){
+                map.setLayoutProperty(runs[i][0], 'visibility', 'visible');
+            }
+        }
+    }
+  });
+}
+
+//toggle single and multi select
+function toggleSelect(){
+    curSingle = document.getElementById("toggleSelect").textContent != "Use Single Select";
+    //if its in multi select then go through all the runs except most recent and remove it
+    if (!curSingle){
+        document.getElementById("toggleSelect").textContent = "Use Multi Select"
+        curSingle = true;
+        if (clickOrder.length>0){
+            for (var i=0; i<clickOrder.length-1; i++){
+                map.setLayoutProperty(runs[clickOrder[i]][0], 'visibility', 'none');
+                document.getElementById("routes").rows[getTableIndex(clickOrder[i])].cells[0].style.backgroundColor = '#C21807'
+                document.getElementById("routes").rows[getTableIndex(clickOrder[i])].cells[1].style.backgroundColor = '#C21807'
+            }
+            clickOrder[0] = clickOrder[clickOrder.length-1]
+            clickOrder.splice(1)
+        }
+      }
+      else{
+            document.getElementById("toggleSelect").textContent = "Use Single Select"
+            curSingle = false;
+      }
+}
+
+commentsOn=true
+function toggleComments(){
+    if (document.getElementById("toggleComments").textContent == "Comments: On"){
+        document.getElementById("toggleComments").textContent = "Comments: Off"
+        document.getElementById("showInfoDiv").style.display = 'none';
+        commentsOn=false
+    }
+    else{
+        document.getElementById("toggleComments").textContent = "Comments: On"
+        commentsOn=true
+        if (clickOrder.length==1){
+            document.getElementById("showInfoDiv").style.display = 'block'
+        }
+    }
+}
+
+/*Done with toggles*/
+/*----------------------------------------------------------------------------------------------------------------------------*/
+/* Set Up helper functions*/
+
+//get the index in the table of a runs index
+function getTableIndex(runsIndex){
+    var rows = document.getElementById("routes").rows;
+    for (var i=0; i<rows.length; i++){
+        if (rows[i].cells[0].innerHTML==runs[runsIndex][0]){
+            return i;
+        }
+    }
+}
+
+//function to print an error message to the screen
+function printError(message){
+    var errorMessage = document.getElementById('error-message');
+    errorMessage.innerText = message;
+    errorMessage.style.display = 'block';
+
+    setTimeout(function() {
+        errorMessage.style.display = 'none';
+    }, 3000); // Display for 3 seconds (3000 milliseconds)
+}
+
+//simple distance function to get distance between points
+function getMagnitude(vector) {
+    return Math.sqrt(Math.pow(vector[0],2)+Math.pow(vector[1],2));
+ }
+
+//function to get the nearest point for a mousemove
+function findClosestPoint(coords,point){
+    //first assume the first point is closest and find the vector of it using the geometry of earth to convert lat and lon to distances
+    var closestPt = coords[0];
+    var closestVec =[Math.abs(365214.666667*Math.cos((Math.PI/180)*coords[0][1])*(coords[0][0]-point[0])), Math.abs(365214.666667 *(coords[0][1]-point[1]))];
+    
+    //now go through and for each point and see if its shorter than last to find the closest point and its index
+    var curVec;
+    var closestIndex = 0;
+    for (var i = 1; i < coords.length; i++){
+        curVec =[Math.abs(365214.666667*Math.cos((Math.PI/180)*coords[i][1])*(coords[i][0]-point[0])), Math.abs(365214.666667 *(coords[i][1]-point[1]))];
+        if (getMagnitude(curVec)<getMagnitude(closestVec)){
+            closestVec = curVec;
+            closestIndex=i;
+            closestPt = coords[i];
+        }
+    }
+    //only return it if its close to the point and not just a hover on a random map point
+    if (getMagnitude(closestVec)>250){
+        return null;
+    }
+    return closestPt;
+}
+
+//adds a route to the map just give it the coords a color and the id for it
+function addLayer(coords,name,color){
+    map.addLayer({
+        "id": name,
+        "type": "line",
+        "source": {
+            "type": "geojson",
+            "data": {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": coords
+                }
+            }
+        },
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": color,
+            "line-width": 4
+        }
+    })
+}
 function doShow(indices){
     if (document.getElementById("routes").rows[indices[1]].cells[0].style.backgroundColor =="black"){
         map.setLayoutProperty(runs[indices[0]][0], 'visibility', 'none');
@@ -386,96 +520,5 @@ function doShow(indices){
         clickOrder.push(indices[0])
     }
 }
-
-function showInfo(runIndex){
-    document.getElementById("showInfoDiv").style.display = 'block'
-    document.getElementById("showInfoDivText").innerHTML = runs[runIndex][3];
-    document.getElementById('infoClose').style.display = 'block'
-}
-
-function closeInfo() {
-    document.getElementById("showInfoDiv").style.display = "none";
-    showingInfo = false;
-}
-
-function showTable(){
-    document.getElementById("show").style.display = 'none';
-    document.getElementById("hide").style.display = 'block';
-    document.getElementById("RouteTable").style.display = 'block';
-        
-    if (clickOrder.length!=0 && showingInfo){
-        document.getElementById("showInfoDiv").style.display = 'block'
-    }
-    document.getElementById("toggleSelect").style.left = 'max(23%, 250px)'
-    document.getElementById("toggleSat").style.left = 'max(23%, 250px)'
-    document.getElementById("toggleSelect").style.bottom = '55px';
-    document.getElementById("toggleSat").style.bottom = '10px';
-}
-
-function hideTable(){
-    document.getElementById("show").style.display = 'block';
-    document.getElementById("hide").style.display = 'none';
-    document.getElementById("RouteTable").style.display = 'none';
-    document.getElementById("showInfoDiv").style.display = 'none'
-    document.getElementById("toggleSelect").style.left = '8px';
-    document.getElementById("toggleSat").style.left = '8px';
-    document.getElementById("toggleSelect").style.bottom = '75px';
-    document.getElementById("toggleSat").style.bottom = '30px';
-}
-
-function toggleSelect(){
-    curSingle = document.getElementById("toggleSelect").textContent != "Use Single Select";
-    if (!curSingle){
-        document.getElementById("toggleSelect").textContent = "Use Multi Select"
-        curSingle = true;
-        if (clickOrder.length>0){
-            for (var i=0; i<clickOrder.length-1; i++){
-                map.setLayoutProperty(runs[clickOrder[i]][0], 'visibility', 'none');
-                document.getElementById("routes").rows[getTableIndex(clickOrder[i])].cells[0].style.backgroundColor = '#C21807'
-                document.getElementById("routes").rows[getTableIndex(clickOrder[i])].cells[1].style.backgroundColor = '#C21807'
-            }
-            clickOrder[0] = clickOrder[clickOrder.length-1]
-            clickOrder.splice(1)
-        }
-      }
-      else{
-            document.getElementById("toggleSelect").textContent = "Use Single Select"
-            curSingle = false;
-      }
-}
-
-function printError(message){
-    var errorMessage = document.getElementById('error-message');
-    errorMessage.innerText = message;
-    errorMessage.style.display = 'block';
-
-    setTimeout(function() {
-        errorMessage.style.display = 'none';
-    }, 3000); // Display for 3 seconds (3000 milliseconds)
-}
-
-function addLayer(coords,name,color){
-    map.addLayer({
-        "id": name,
-        "type": "line",
-        "source": {
-            "type": "geojson",
-            "data": {
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "LineString",
-                    "coordinates": coords
-                }
-            }
-        },
-        "layout": {
-            "line-join": "round",
-            "line-cap": "round"
-        },
-        "paint": {
-            "line-color": "#C21807",
-            "line-width": 4
-        }
-    })
-}
+/*Done with helper functions*/
+/*----------------------------------------------------------------------------------------------------------------------------*/

@@ -5,7 +5,7 @@ body { margin: 0; padding: 0;}
 .container {
     display: inline-block;
 }
-    
+
 #RouteTable {
     text-align: center;
     overflow: auto;
@@ -293,6 +293,21 @@ h1{
     z-index: 5;
 }
 
+#toggleComments{
+    size: fixed;
+    position: fixed;
+    width: 155px;
+    bottom: 55px;
+    left: max(23%, 250px);
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: none;
+}
+
+
 /* Styles for phones in portrait mode (including high-resolution screens) */
 @media (pointer: coarse) and (orientation: portrait) {
 .close-button {
@@ -322,16 +337,8 @@ h1{
     bottom: 0% !important;
 }
 
-#toggleSat{
+#toggleComments{
     top : 0px;
-    right: 0px !important;
-    padding: 3px;
-    height: 25px;
-    width: 30%;
-}
-
-#toggleSelect{
-    top : 30px;
     right: 0px !important;
     padding: 3px;
     height: 25px;
