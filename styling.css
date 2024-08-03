@@ -320,6 +320,11 @@ h1{
     width: 68%;
     position: relative;
 }
+.extraInfo {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    /* Add any other font styles you want */
+}
 
 #RouteTable {
     padding: 10px;
