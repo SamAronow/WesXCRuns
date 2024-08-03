@@ -122,7 +122,7 @@ body { margin: 0; padding: 0;}
     width: max(15%, 210px);
     height: auto;
     background-color: white;
-    padding: 5px 10px;
+    padding: 5px 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
