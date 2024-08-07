@@ -284,9 +284,16 @@ function show(event){
 
 function showInfo(runIndex){
     document.getElementById("showInfoDivText").innerHTML = runs[runIndex][3];
+    console.log(clickOrder)
     if (!commentsOn){
         return
     }
+    if (clickOrder.length>1){
+        document.getElementById("showInfoDiv").style.display = 'none'
+        document.getElementById('infoClose').style.display = 'none'
+        return
+    }
+
     document.getElementById("showInfoDiv").style.display = 'block'
     document.getElementById('infoClose').style.display = 'block'
 }
@@ -378,6 +385,9 @@ function toggleSelect(){
             }
             clickOrder[0] = clickOrder[clickOrder.length-1]
             clickOrder.splice(1)
+            if (commentsOn){
+                showInfo(clickOrder[0])
+            }
         }
       }
       else{
@@ -492,9 +502,10 @@ function doShow(indices){
             document.getElementById("showInfoDiv").style.display = 'none'
         }
         else{
-            if (runs[clickOrder[clickOrder.length-1]][3]!=document.getElementById("showInfoDivText").innerHTML){
-                document.getElementById("showInfoDivText").innerHTML = runs[clickOrder[clickOrder.length-1]][3]
-            }  
+            showInfo(clickOrder[clickOrder.length-1])
+            //if (runs[clickOrder[clickOrder.length-1]][3]!=document.getElementById("showInfoDivText").innerHTML){
+              //  document.getElementById("showInfoDivText").innerHTML = runs[clickOrder[clickOrder.length-1]][3]
+            //}  
         } 
     }
     else{
@@ -504,7 +515,6 @@ function doShow(indices){
         }
         document.getElementById("routes").rows[indices[1]].cells[0].style.backgroundColor = "black"
         document.getElementById("routes").rows[indices[1]].cells[1].style.backgroundColor = "black"
-        showInfo(indices[0])
         if (curSingle && clickOrder.length!=0){
             for (var i=0; i<document.getElementById("routes").rows.length; i++){
                 //console.log(document.getElementById("routes").rows[i].cells[0].innerHTML)
@@ -518,6 +528,7 @@ function doShow(indices){
             clickOrder = new Array(0)
         }
         clickOrder.push(indices[0])
+        showInfo(indices[0])
     }
 }
 /*Done with helper functions*/

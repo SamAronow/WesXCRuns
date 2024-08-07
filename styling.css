@@ -314,6 +314,12 @@ h1{
 .close-button {
     right: 0px;
 }
+#toggleSat{
+    visibility: hidden !important;
+}
+#toggleSelect{
+    visibility: hidden !important;
+}
 #showInfoDiv {
     padding: 0px;
     left: 32%;
