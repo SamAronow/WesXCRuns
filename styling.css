@@ -306,7 +306,7 @@ h1{
 @media (pointer: coarse) and (orientation: portrait) {
 .close-button {
     position: absolute;
-    right: -5px;
+    right: 0px;
 }
 #toggleSat{
     visibility: hidden !important;
@@ -341,7 +341,7 @@ h1{
 
 #show{
     position: fixed;
-    top: -50px;
+    bottom: -50px;
     left: 50%;
 }
 
