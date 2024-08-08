@@ -404,7 +404,7 @@ h1{
     right: 0% !important;
     bottom: 0%;
     height:30px;
-    position: fixed;
+    position: static;
 }
 
 #toggleComments{
