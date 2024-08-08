@@ -133,7 +133,7 @@ th, td {
 #showInfoDivText{
     z-index:2;
     width: 100%;
-    height: auto;
+    height: 100%;
     padding: 2px 0px;
 }
 
@@ -306,7 +306,7 @@ h1{
 @media (pointer: coarse) and (orientation: portrait) {
 .close-button {
     position: absolute;
-    right: 0px;
+    right: -5px;
 }
 #toggleSat{
     visibility: hidden !important;
@@ -341,7 +341,7 @@ h1{
 
 #show{
     position: fixed;
-    bottom: -50px;
+    top: -50px;
     left: 50%;
 }
 
