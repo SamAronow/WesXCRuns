@@ -319,7 +319,7 @@ h1{
     left: 30%;
     bottom: 0 !important;
     width: 70%;
-    position: relative;
+    position: fixed;
 }
 .extraInfo {
     font-family: Arial, sans-serif;
@@ -329,7 +329,7 @@ h1{
 
 #infoClose{
     position: absolute;
-    right: -5px;
+    right: -10px;
 }
 
 #RouteTable {
@@ -348,6 +348,7 @@ h1{
     position: fixed;
     bottom: -50px;
     left: 50%;
+    height:30px;
 }
 
 #toggleComments{
