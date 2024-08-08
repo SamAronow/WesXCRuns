@@ -401,10 +401,10 @@ h1{
 }
 
 #show{
-    bottom: 0% !important;
-    right: 0%;
+    right: 0% !important;
+    bottom: 0%;
     height:30px;
-    position: absolute;
+    position: fixed;
 }
 
 #toggleComments{
