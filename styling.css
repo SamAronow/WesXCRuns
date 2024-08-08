@@ -402,7 +402,7 @@ h1{
 
 #show{
     left: 50%;
-    bottom: -50%;
+    bottom: -100%;
     height:30px;
     position: fixed;
 }
