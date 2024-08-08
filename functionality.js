@@ -1,3 +1,18 @@
+for (i=0; i<runs.length; i++){
+    coords = runs[i][2].features[0].geometry.coordinates[0]
+    lon=0
+    lat=0
+    for (j=0; j<coords.length; j++){
+        lon+=coords[j][0]
+        lat+=coords[j][1]
+    }
+    lon=lon/coords.length
+    lat=lat/coords.length
+    runs[i].push([lon,lat])
+}
+
+
+
 /*----------------------------------------------------------------------------------------------------------------------------*/
 /*Set up map instructions*/
 
@@ -9,7 +24,7 @@ var map = new mapboxgl.Map({
     container: 'map', // Container ID
     style: 'mapbox://styles/mapbox/satellite-streets-v11', // Mapbox Satellite Streets style
     center: [-72.667, 41.551358], // Initial center coordinates (longitude, latitude)
-    zoom: 14 // Initial zoom level
+    zoom: 13.5// Initial zoom level
 });
 
 //when the map loads in get runs from routes.js. add them as a layer and make them invisible until selected
@@ -223,7 +238,7 @@ function search(event){
         if (source.id == "dist2"){
             source.value = searchFields[2]
         }
-        printError("No trails match those specifications")
+        printError("No routes match those specifications")
         return;
     }
     /*done with reset*/
@@ -512,7 +527,12 @@ function doShow(indices){
         map.setLayoutProperty(runs[indices[0]][0], 'visibility', 'visible');
         if (getMagnitude([map.getCenter().lng-runs[indices[0]][2].features[0].geometry.coordinates[0][0][0],map.getCenter().lat-runs[indices[0]][2].features[0].geometry.coordinates[0][0][1]])>.02){
             map.setCenter(runs[indices[0]][2].features[0].geometry.coordinates[0][0]);
-        }
+            map.setZoom(13.5)
+        }/*
+       if (getMagnitude([map.getCenter().lng-runs[indices[0]][5][0],map.getCenter().lat-runs[indices[0]][5][1]])>.02){
+            map.setCenter(runs[indices[0]][5]);
+            map.setZoom(12.5)
+        }*/
         document.getElementById("routes").rows[indices[1]].cells[0].style.backgroundColor = "black"
         document.getElementById("routes").rows[indices[1]].cells[1].style.backgroundColor = "black"
         if (curSingle && clickOrder.length!=0){
