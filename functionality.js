@@ -342,7 +342,6 @@ function hideTable(){
     if (!isPortrait()){
         document.getElementById("showInfoDiv").style.display = 'none'
     }
-    document.getElementById("showInfoDiv").style.left = '5px';
     document.getElementById("toggleSelect").style.left = '8px';
     document.getElementById("toggleSat").style.left = '8px';
     document.getElementById("toggleSelect").style.bottom = '75px';
