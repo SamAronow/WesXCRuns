@@ -338,6 +338,7 @@ function showTable(){
 if (isPortrait()){
     document.getElementById("show").innerHTML="&#8595;"
     document.getElementById("hide").innerHTML="&#8595;"
+    document.getElementById("show").style.bottom = "0px";
 }
 
 function hideTable(){
