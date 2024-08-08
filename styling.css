@@ -17,7 +17,7 @@ body {
     bottom: 0px;
     left: 0px;
     width: 22%;
-    min-width: 260px;
+    min-width: 270px;
     height: 100%;
     background-color: white;
     padding: 1px;
@@ -99,53 +99,65 @@ body {
 }
 #mainsLabel{
     position: relative;
-    right:2px;
+    right:5px;
     bottom:10px;
 }
 #mainsBox{
     position: relative;
-    right:4px;
+    right:6px;
     bottom:10px;
 }
 #addsLabel{
     position: relative;
-    right:4px;
+    right:6px;
     bottom:10px;
 }
 
 #addsBox{
     position: relative;
-    right:4px;
+    right:6px;
     bottom:10px;
 }
 
 #variationsLabel{
     position: relative;
-    right:4px;
+    right:6px;
     bottom:10px;
 }
 
 #variationsBox{
     position: relative;
-    right:4px;
+    right:6px;
     bottom:10px;
 }
 
 .filterCheckbox{
     font-size:13.5px;
     position: relative;
-    right:4px;
+    right:6px;
     bottom:10px;
     transform: scale(0.9);
 }
 
 #drivesLabel{
     position: relative;
-    right:4px;
+    right:6px;
     bottom:10px;
 }
 
 #drivesBox{
+    position: relative;
+    right:6px;
+    bottom:10px;
+}
+
+#obsLabel{
+    position: relative;
+    right:6px;
+    bottom:10px;
+}
+
+#obsBox{
     position: relative;
     right:6px;
     bottom:10px;
@@ -307,6 +319,10 @@ h1{
 
 .toggleButtton{
     font-size: 13px;
+    border: 5px solid white;
+    border-radius: 10px;
+    background-color: black;
+    
 }
 
 #toggleComments{
@@ -314,9 +330,9 @@ h1{
         position: fixed;
         width: 155px;
         bottom: 55px;
-        left: max(22.5%, 265px);
+        left: max(22.5%, 275px);
         padding: 10px 20px;
-        background-color: #007bff;
+        /*background-color: #007bff;*/
         color: #fff;
         border: none;
         cursor: pointer;
@@ -327,10 +343,11 @@ h1{
     position: absolute;
     size: fixed;
     width: 155px;
-    bottom: 10px;
-    left: max(22.5%, 265px);
+    bottom: 20px;
+    /*left: max(22.5%, 265px);*/
+    right: 10px;
     padding: 10px 20px;
-    background-color: #007bff;
+    /*background-color: #007bff;*/
     color: #fff;
     border: none;
     cursor: pointer;
@@ -340,10 +357,11 @@ h1{
     size: fixed;
     position: fixed;
     width: 155px;
-    bottom: 55px;
-    left: max(22.5%, 265px);
+    bottom: 65px;
+    /*left: max(22.5%, 265px);*/
+    right:10px;
     padding: 10px 20px;
-    background-color: #007bff;
+    /*background-color: #007bff;*/
     color: #fff;
     border: none;
     cursor: pointer;

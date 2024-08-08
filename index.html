@@ -46,18 +46,21 @@
         <input type="text" id="dist2" name="dist2" onkeydown="handleDist2Search(event)" oninput="search(event)"> 
         <button class="close-button" id ="hide" onclick = "hideTable()">&#8592;</button>
 
-        <label class="filterLabel" id = "mainsLabel">Mains</label>
-        <input class="filterCheckbox" type="checkbox" id="mainsBox" checked/>
+        <label class="filterLabel" id = "mainsLabel">Main</label>
+        <input class="filterCheckbox" type="checkbox" id="mainsBox" onclick="filter()" checked/>
 
-        <label class="filterLabel" id = "variationsLabel">Variations</label>
-        <input class="filterCheckbox" type="checkbox" id="variationsBox" checked/>
+        <label class="filterLabel" id = "variationsLabel">Mod</label>
+        <input class="filterCheckbox" type="checkbox" id="variationsBox" onclick="filter()" checked/>
 
-        <label class="filterLabel" id = "addsLabel">Adds</label>
-        <input class="filterCheckbox" type="checkbox" id="addsBox" checked/>
+        <label class="filterLabel" id = "addsLabel">Add</label>
+        <input class="filterCheckbox" type="checkbox" id="addsBox" onclick="filter()" checked/>
         
         
         <label class="filterLabel" id = "drivesLabel">Drive</label>
-        <input class="filterCheckbox" type="checkbox" id="drivesBox" checked/>
+        <input class="filterCheckbox" type="checkbox" id="drivesBox" onclick="filter()" checked/>
+
+        <label class="filterLabel" id = "obsLabel">OB</label>
+        <input class="filterCheckbox" type="checkbox" id="obsBox" onclick="filter()" checked/>
 
     </div>
 

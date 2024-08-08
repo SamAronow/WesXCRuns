@@ -11,6 +11,12 @@ for (i=0; i<runs.length; i++){
     runs[i].push([lon,lat])
 }
 
+sums=[0,0,0,0,0]
+for (i=0; i<runs.length; i++){
+    sums[runs[i][5]]++
+}
+console.log(sums)
+
 
 
 /*----------------------------------------------------------------------------------------------------------------------------*/
@@ -152,7 +158,6 @@ document.addEventListener('keydown', handleArrowKeys);
 
 //handle arrows to move around in run select
 function handleArrowKeys(event){
-    console.log(clickOrder)
     if (!curSingle){
         return;
     }
@@ -291,6 +296,16 @@ function show(event){
         }
     }
     doShow([runsIndex,tableIndex])
+}
+
+function filter(){
+    var checked = new Array(0);
+    checked.push(document.getElementById("mainsBox").checked)
+    checked.push(document.getElementById("variationsBox").checked)
+    checked.push(document.getElementById("addsBox").checked)
+    checked.push(document.getElementById("drivesBox").checked)
+    checked.push(document.getElementById("obsBox").checked)
+    console.log(checked)
 }
 
 /*Done With Event handling*/
