@@ -1,4 +1,4 @@
-/*@media (pointer: coarse) and (orientation: portrait) {
+@media (pointer: coarse) and (orientation: portrait) {
     .close-button {
     right: 0px;
 }
@@ -50,4 +50,4 @@
     width: 27%;
     display: block;
 }
-}*/
+}

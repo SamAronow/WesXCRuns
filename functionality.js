@@ -128,7 +128,7 @@ function closePopup() {
 }
 var overlay = document.getElementById('overlay');
 var popup = document.getElementById('popup');
-//window.onload = showPopup;
+window.onload = showPopup;
 /*finish setting up the pop up stuff*/
 
 /*set up the route table with buttons*/
