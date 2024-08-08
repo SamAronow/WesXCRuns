@@ -401,7 +401,7 @@ h1{
 }
 
 #show{
-    right: 150%;
+    left: 150%;
     top: 0px;
     height:30px;
     position: fixed;
