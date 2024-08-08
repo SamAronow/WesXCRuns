@@ -316,7 +316,7 @@ h1{
 }
 #showInfoDiv {
     padding: 0px;
-    left: 32%;
+    left: 30%;
     bottom: 0 !important;
     width: 70%;
     position: relative;
@@ -341,7 +341,7 @@ h1{
 
 #show{
     position: fixed;
-    bottom: 0px;
+    bottom: -50px;
     left: 50%;
 }
 
