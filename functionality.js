@@ -335,6 +335,11 @@ function showTable(){
     document.getElementById("toggleSat").style.bottom = '10px';
 }
 
+if (isPortrait()){
+    document.getElementById("show").innerHTML="&#8595;"
+    document.getElementById("hide").innerHTML="&#8595;"
+}
+
 function hideTable(){
     document.getElementById("show").style.display = 'block';
     document.getElementById("hide").style.display = 'none';
