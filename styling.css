@@ -345,7 +345,7 @@ h1{
 }
 
 #show{
-    position: fixed;
+    position: relative;
     bottom: 0px;
     left: 50%;
     height:30px;
