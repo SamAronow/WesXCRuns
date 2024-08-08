@@ -403,7 +403,7 @@ h1{
 #show{
     bottom: 0px;
     left: 0%;
-    height:auto;
+    height:30px;
 }
 
 #toggleComments{
