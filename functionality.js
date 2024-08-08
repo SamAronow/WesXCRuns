@@ -465,14 +465,19 @@ function getTableIndex(runsIndex){
 }
 
 //function to print an error message to the screen
+inError=false;
 function printError(message){
-    var errorMessage = document.getElementById('error-message');
-    errorMessage.innerText = message;
-    errorMessage.style.display = 'block';
+    if (!inError){
+        var errorMessage = document.getElementById('error-message');
+        errorMessage.innerText = message;
+        errorMessage.style.display = 'block';
+        inError = true;
 
-    setTimeout(function() {
-        errorMessage.style.display = 'none';
-    }, 3000); // Display for 3 seconds (3000 milliseconds)
+        setTimeout(function() {
+            inError = false
+            errorMessage.style.display = 'none';
+        }, 3500); // Display for 3 seconds (3000 milliseconds)
+    }
 }
 
 //simple distance function to get distance between points
