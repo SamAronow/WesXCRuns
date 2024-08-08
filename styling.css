@@ -402,9 +402,9 @@ h1{
 
 #show{
     bottom: 50% !important;
-    left: 0%;
+    right: 0%;
     height:30px;
-    position: fixed;
+    position: absolute;
 }
 
 #toggleComments{
