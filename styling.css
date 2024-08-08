@@ -401,8 +401,8 @@ h1{
 }
 
 #show{
-    right: 50% !important;
-    bottom: 100%;
+    right: 100px;
+    bottom: 100px;
     height:30px;
     position: relative;
 }
