@@ -307,7 +307,6 @@ h1{
 .close-button {
     position: absolute;
     right: 0px;
-    width: 50px;
 }
 #toggleSat{
     visibility: hidden !important;
