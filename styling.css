@@ -328,7 +328,6 @@ h1{
 }
 
 
-
 #RouteTable {
     padding: 10px;
     bottom: 0px;
@@ -342,10 +341,8 @@ h1{
 }
 
 #show{
-    position: relative;
     bottom: 0px;
     left: 50%;
-    height:30px;
 }
 
 #toggleComments{
