@@ -339,7 +339,10 @@ function hideTable(){
     document.getElementById("show").style.display = 'block';
     document.getElementById("hide").style.display = 'none';
     document.getElementById("RouteTable").style.display = 'none';
-    document.getElementById("showInfoDiv").style.display = 'none'
+    if (!isPortrait()){
+        document.getElementById("showInfoDiv").style.display = 'none'
+    }
+    document.getElementById("showInfoDiv").style.left = '5px';
     document.getElementById("toggleSelect").style.left = '8px';
     document.getElementById("toggleSat").style.left = '8px';
     document.getElementById("toggleSelect").style.bottom = '75px';
@@ -550,6 +553,10 @@ function doShow(indices){
         clickOrder.push(indices[0])
         showInfo(indices[0])
     }
+}
+
+function isPortrait() {
+    return window.matchMedia('(orientation: portrait)').matches;
 }
 /*Done with helper functions*/
 /*----------------------------------------------------------------------------------------------------------------------------*/
