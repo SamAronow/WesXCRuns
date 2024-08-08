@@ -327,6 +327,11 @@ h1{
     /* Add any other font styles you want */
 }
 
+#infoClose{
+    position: absolute;
+    right: -5px;
+}
+
 #RouteTable {
     padding: 10px;
     bottom: 0px;
