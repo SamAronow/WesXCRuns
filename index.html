@@ -9,7 +9,9 @@
   <link rel="icon" type="image/png" href="WesLogo.png" sizes="32x32" />
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="styling.css">    
+  <link rel="stylesheet" href="styling.css">   
+  <link rel="stylesheet" href="phone-styling.css"> 
+  <link rel="stylesheet" href="phone-hor-styling.css"> 
 </head>
 
 <body>
@@ -55,13 +57,11 @@
         <label class="filterLabel" id = "addsLabel">Add</label>
         <input class="filterCheckbox" type="checkbox" id="addsBox" onclick="filter()" checked/>
         
-        
         <label class="filterLabel" id = "drivesLabel">Drive</label>
         <input class="filterCheckbox" type="checkbox" id="drivesBox" onclick="filter()" checked/>
 
         <label class="filterLabel" id = "obsLabel">OB</label>
         <input class="filterCheckbox" type="checkbox" id="obsBox" onclick="filter()" checked/>
-
     </div>
 
     <div class="scrollable-content" id ="innerRouteTable">
@@ -69,7 +69,6 @@
             <tr>
               <th>Name</th>
               <th>Distance</th>
-              
             </tr>
         </table> 
     </div>

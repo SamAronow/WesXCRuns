@@ -128,7 +128,7 @@ function closePopup() {
 }
 var overlay = document.getElementById('overlay');
 var popup = document.getElementById('popup');
-//window.onload = showPopup;
+window.onload = showPopup;
 /*finish setting up the pop up stuff*/
 
 /*set up the route table with buttons*/
@@ -344,10 +344,10 @@ function showTable(){
 
         }
     }
-    document.getElementById("toggleSelect").style.left = 'max(23%, 250px)'
-    document.getElementById("toggleSat").style.left = 'max(23%, 250px)'
-    document.getElementById("toggleSelect").style.bottom = '55px';
-    document.getElementById("toggleSat").style.bottom = '10px';
+    //document.getElementById("toggleSelect").style.left = 'max(23%, 250px)'
+    //document.getElementById("toggleSat").style.left = 'max(23%, 250px)'
+    //document.getElementById("toggleSelect").style.bottom = '55px';
+    //document.getElementById("toggleSat").style.bottom = '10px';
 }
 
 if (isPortrait()){
@@ -363,10 +363,10 @@ function hideTable(){
     if (!isPortrait()){
         document.getElementById("showInfoDiv").style.display = 'none'
     }
-    document.getElementById("toggleSelect").style.left = '8px';
-    document.getElementById("toggleSat").style.left = '8px';
-    document.getElementById("toggleSelect").style.bottom = '75px';
-    document.getElementById("toggleSat").style.bottom = '30px';
+    //document.getElementById("toggleSelect").style.left = '8px';
+    //document.getElementById("toggleSat").style.left = '8px';
+    //document.getElementById("toggleSelect").style.bottom = '75px';
+    //document.getElementById("toggleSat").style.bottom = '30px';
 }
 
 /*Done hiding and showing html stuff*/
