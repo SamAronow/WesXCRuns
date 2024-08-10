@@ -556,7 +556,7 @@ function toggleComments(){
         document.getElementById("toggleComments").textContent = "Comments: On"
         commentsOn=true
         if (clickOrder.length==1){
-            if (document.getElementById("show").style.display=="block"){
+            if (document.getElementById("show").style.display=="none"){
                 document.getElementById("showInfoDiv").style.display = 'block'
             }
         }
