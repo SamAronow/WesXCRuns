@@ -62,12 +62,12 @@
     top:5px;
     right: 5px;
     font-size: 18px;
-    height: 40px;
-    width: 30px !important;
+    height: 35px;
+    width: 35px !important;
     z-index: 3;
-    border-radius: 30px;
+    border-radius: 35px;
     color: black;
-    background-color: grey;
+    background-color: white;
     border: 1px solid black;
 }
 }
