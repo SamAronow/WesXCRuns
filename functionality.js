@@ -128,7 +128,7 @@ var searchFields = ["","",""]
 /*start the page my turning on the popup and define the close popup for exiting it*/
 function showPopup() {
     overlay.style.display = 'block';
-     popup.style.display = 'block';
+    popup.style.display = 'block';
 }
 //
 function closePopup() {
@@ -463,7 +463,7 @@ if (isPortrait()){
     document.getElementById("show").innerHTML="&#8595;"
     document.getElementById("hide").innerHTML="&#8595;"
     document.getElementById("show").style.bottom = "0px";
-    document.getElementById("pop").innerHTML=" <p>Satellite and Street View- can change between them using toggle in the bottom right</p><p><b>Search function - can use name and 2 distance fields in header of the table of routes to search for routesthat contain the text in the name field and have a distance between the 2 distance fields</b></p><p><b>Checkboxes- can check and uncheck different types of runs to make them visible, <p>MAIN is the base runs we do, ADD is add ons and wu/cd loops, MOD is modifications to loops, DRIVE is runs you have to drive to, OB is out and backs</p></b></p></p><b>On Computer you can toggle through the routes with up and down arrow in single select mode</b></p>"
+    document.getElementById("pop").innerHTML="<p>Satellite and Street View- can change between them using toggle in the bottom right</p><p><b>Search function - can use name and 2 distance fields in header of the table of routes to search for routesthat contain the text in the name field and have a distance between the 2 distance fields</b></p><p><b>Checkboxes- can check and uncheck different types of runs to make them visible, <p>MAIN is the base runs we do, ADD is add ons and wu/cd loops, MOD is modifications to loops, DRIVE is runs you have to drive to, OB is out and backs</p></b></p></p>"
 }
 
 function hideTable(){
