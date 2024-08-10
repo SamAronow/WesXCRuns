@@ -547,13 +547,13 @@ function toggleSelect(){
 
 commentsOn=true
 function toggleComments(){
-    if (document.getElementById("toggleComments").textContent == "Comments: On"){
-        document.getElementById("toggleComments").textContent = "Comments: Off"
+    if (document.getElementById("toggleComments").textContent == "Comments On"){
+        document.getElementById("toggleComments").textContent = "Comments Off"
         document.getElementById("showInfoDiv").style.display = 'none';
         commentsOn=false
     }
     else{
-        document.getElementById("toggleComments").textContent = "Comments: On"
+        document.getElementById("toggleComments").textContent = "Comments On"
         commentsOn=true
         if (clickOrder.length==1){
             if (document.getElementById("show").style.display=="none"){

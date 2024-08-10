@@ -8,10 +8,10 @@
 #showInfoDiv {
     position: fixed;
     padding: 0px;
-    left: 30%;
+    left: 40%;
     top: 0%;
     height: auto;
-    width: 70%;
+    width: 60%;
 }
 .extraInfo {
     font-family: Arial, sans-serif;
@@ -41,19 +41,19 @@
 #toggleComments{
     position: fixed;
     top : 5px;
-    left: 5px;
+    left: 15%;
     padding: 3px;
     height: 25px;
-    width: 27%;
+    width: 24%;
     display: block;
 }
 #toggleSat{
     position: fixed;
     top : 33px;
-    left: 5px;
+    left: 15%;
     padding: 3px;
     height: 25px;
-    width: 27%;
+    width: 24%;
     display: block;
 }
 
@@ -63,8 +63,8 @@
     text-align: center;
     left: 5px;
     font-size: 18px;
-    height: 30px;
-    width: 30px;
+    height: 40px;
+    width: 40px;
     position: fixed;
     z-index: 3;
     border-radius: 30px;
