@@ -50,4 +50,17 @@
     width: 27%;
     display: block;
 }
+#toggleSat{
+    position: fixed;
+    top : 33px;
+    left: 5px;
+    padding: 3px;
+    height: 25px;
+    width: 27%;
+    display: block;
+}
+#help{
+    top:60px;
+    left: 5px;
+}
 }

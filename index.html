@@ -24,16 +24,19 @@
 
   <div class="popup" id="popup">
     <span class="close-button" onclick="closePopup()">&times;</span>
-    <p>Welcome to WesXC Routes! Simply click on a run's row of the 
-    table to show or hide the route! You are currently in single-select mode where showing a new route will hide the 
-    previous route, however if you'd like you can use the bottom right button to change to Multi-Select Mode where you 
-    can see any number of runs at once! You can also hover over any point in single select mode to see the distance to that point
-    in the route and can use the arrow keys to change routes!</p>
+    <p>Toggle between single and multi select using the toggle in the bottom</p>
+    <p>Single Select - one route gets selected at a time and selecting a new one replaces the old</p>
+    <p>Multi  Select - can select as many runs at once and it will keep adding them</p>
+    <p>Satellite and Street View- can change between them using toggle in the bottom right</p>
+    <p><b>Search function - can use name and 2 distance fields in header of the table of routes to search for routes
+      that contain the text in the name field and have a distance between the 2 distance fields</b></p>
+    <p><b>Checkboxes- can check and uncheck different types of runs to make them visible, <p>MAIN is the base runs we do, ADD is add ons and wu/cd loops, MOD is modifications to loops, DRIVE is runs you have to drive to, OB is out and backs</p></b></p>
+  </p><b>On Computer you can toggle through the routes with up and down arrow in single select mode</b></p>
   </div>
 
   <button id = "help" onclick="showPopup()"><b>?</b></button>
 
-  <button class = "toggleButtton" id="toggleSat" onclick = "toggleSatellite()">View Streets</button>
+  <button class = "toggleButtton" id="toggleSat" onclick = "toggleSatellite()">View Satellite</button>
   <button class = "toggleButtton" id="toggleSelect" onclick = "toggleSelect()">Use Multi Select</button>
   <button class = "toggleButtton" id="toggleComments" onclick = "toggleComments()">Comments: On</button>
 
@@ -51,19 +54,19 @@
         <button class="close-button" id ="hide" onclick = "hideTable()">&#8592;</button>
 
         <label class="filterLabel" id = "mainsLabel">Main</label>
-        <input class="filterCheckbox" type="checkbox" id="mainsBox" onclick="filter()" checked/>
-
-        <label class="filterLabel" id = "variationsLabel">Mod</label>
-        <input class="filterCheckbox" type="checkbox" id="variationsBox" onclick="filter()" checked/>
+        <input class="filterCheckbox" type="checkbox" id="mainsBox" onclick="filter(this)" checked/>
 
         <label class="filterLabel" id = "addsLabel">Add</label>
-        <input class="filterCheckbox" type="checkbox" id="addsBox" onclick="filter()" checked/>
+        <input class="filterCheckbox" type="checkbox" id="addsBox" onclick="filter(this)"/>
+
+        <label class="filterLabel" id = "variationsLabel">Mod</label>
+        <input class="filterCheckbox" type="checkbox" id="variationsBox" onclick="filter(this)" checked/>
         
         <label class="filterLabel" id = "drivesLabel">Drive</label>
-        <input class="filterCheckbox" type="checkbox" id="drivesBox" onclick="filter()" checked/>
+        <input class="filterCheckbox" type="checkbox" id="drivesBox" onclick="filter(this)"/>
 
         <label class="filterLabel" id = "obsLabel">OB</label>
-        <input class="filterCheckbox" type="checkbox" id="obsBox" onclick="filter()" checked/>
+        <input class="filterCheckbox" type="checkbox" id="obsBox" onclick="filter(this)" checked/>
     </div>
 
     <div class="scrollable-content" id ="innerRouteTable">

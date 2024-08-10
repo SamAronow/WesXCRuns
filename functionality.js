@@ -1,4 +1,4 @@
-for (i=0; i<runs.length; i++){
+/*for (i=0; i<runs.length; i++){
     coords = runs[i][2].features[0].geometry.coordinates[0]
     lon=0
     lat=0
@@ -9,13 +9,22 @@ for (i=0; i<runs.length; i++){
     lon=lon/coords.length
     lat=lat/coords.length
     runs[i].push([lon,lat])
-}
+}*/
 
+/*
 sums=[0,0,0,0,0]
 for (i=0; i<runs.length; i++){
     sums[runs[i][5]]++
+}*/
+
+for (i=0; i<runs.length; i++){
+    if (runs[i][5]==1 || runs[i][5]==3){
+        runs[i].push(false)
+        continue
+    }
+    runs[i].push(true)
 }
-console.log(sums)
+
 
 
 
@@ -28,7 +37,7 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoic2FtYXJudyIsImEiOiJjbGl1c2F1dDAwOW02M3BueTJwd
 //instantiate my map with prefered settings
 var map = new mapboxgl.Map({
     container: 'map', // Container ID
-    style: 'mapbox://styles/mapbox/satellite-streets-v11', // Mapbox Satellite Streets style
+    style: 'mapbox://styles/mapbox/streets-v11', // Mapbox Satellite Streets style
     center: [-72.667, 41.551358], // Initial center coordinates (longitude, latitude)
     zoom: 13.5// Initial zoom level
 });
@@ -109,7 +118,7 @@ map.on('mousemove', (e) => {
 */
 var clickOrder = new Array(0);
 var curSingle = true;
-var isSatellite=true;
+var isSatellite=false;
 var showingInfo = true;
 document.getElementById("dist1").value =""
 document.getElementById("dist2").value =""
@@ -128,7 +137,7 @@ function closePopup() {
 }
 var overlay = document.getElementById('overlay');
 var popup = document.getElementById('popup');
-window.onload = showPopup;
+//window.onload = showPopup;
 /*finish setting up the pop up stuff*/
 
 /*set up the route table with buttons*/
@@ -136,6 +145,9 @@ var table = document.getElementById("routes")
 var row;
 var cell;
 for (var i=0; i<runs.length; i++){
+    if (!runs[i][6]){
+        continue
+    }
     row = table.insertRow();
     for (var j = 0; j<2; j++){
         row.insertCell();
@@ -161,25 +173,30 @@ function handleArrowKeys(event){
     if (!curSingle){
         return;
     }
-        if (event.key === 'ArrowUp') {
-            if (clickOrder[0]==0){
-                event.preventDefault();
-                document.getElementById("innerRouteTable").scrollTop = document.getElementById("innerRouteTable").scrollHeight+100;
-            }
-            else{
-                doShow([clickOrder[0]-1,getTableIndex(clickOrder[0]-1)])
-            } 
-      } 
-      if (event.key == 'ArrowDown'){
-        if (clickOrder[0]==runs.length-1){
-                event.preventDefault();
-                console.log(clickOrder)
-                doShow([0,1])
-                document.getElementById("innerRouteTable").scrollTop = 0;
-            }
-            else{
-                doShow([clickOrder[0]+1,getTableIndex(clickOrder[0]+1)])
-            }
+    runIndex = clickOrder[0]
+    tableIndex = getTableIndex(runIndex)
+    if (tableIndex==-1){
+        return
+    }
+    if (event.key === 'ArrowUp') {
+        if (tableIndex==1){
+            event.preventDefault();
+            document.getElementById("innerRouteTable").scrollTop = document.getElementById("innerRouteTable").scrollHeight+100;
+            doShow([getRunIndex(document.getElementById("routes").rows.length-1),document.getElementById("routes").rows.length-1])
+        }
+        else{
+            doShow([getRunIndex(tableIndex-1),tableIndex-1])
+        } 
+    } 
+    if (event.key == 'ArrowDown'){
+        if (tableIndex==document.getElementById("routes").rows.length-1){
+            event.preventDefault();
+            document.getElementById("innerRouteTable").scrollTop = 0;
+            doShow([getRunIndex(1),1])
+        }
+        else{
+            doShow([getRunIndex(tableIndex+1),tableIndex+1])
+        }
       }
 }
 
@@ -227,7 +244,7 @@ function search(event){
     //see if any routes match the description
     var match = false;
     for (var i=0; i<runs.length; i++){
-        if (runs[i][0].substring(0,text.length).toUpperCase()==text.toUpperCase() && runs[i][1]>dist[0] && runs[i][1]<dist[1]){
+        if (runs[i][0].substring(0,text.length).toUpperCase()==text.toUpperCase() && runs[i][1]>dist[0] && runs[i][1]<dist[1] && runs[i][6]){
             match = true;
         }
     }
@@ -248,6 +265,7 @@ function search(event){
     }
     /*done with reset*/
 
+
     //take the table and clear it out and then if any run matches the thresholds then add it back
     var table = document.getElementById("routes");
     var row;
@@ -255,7 +273,7 @@ function search(event){
       table.deleteRow(1);
     }
     for (var i=0; i<runs.length; i++){
-        if (runs[i][0].substring(0,text.length).toUpperCase()==text.toUpperCase() && runs[i][1]>dist[0] && runs[i][1]<dist[1]){
+        if (runs[i][0].substring(0,text.length).toUpperCase()==text.toUpperCase() && runs[i][1]>dist[0] && runs[i][1]<dist[1] && runs[i][6]){
 
         row = table.insertRow();
         for (var j = 0; j<2; j++){
@@ -298,14 +316,106 @@ function show(event){
     doShow([runsIndex,tableIndex])
 }
 
-function filter(){
+function filter(source){
     var checked = new Array(0);
+    all_unchecked=true
     checked.push(document.getElementById("mainsBox").checked)
-    checked.push(document.getElementById("variationsBox").checked)
     checked.push(document.getElementById("addsBox").checked)
+    checked.push(document.getElementById("variationsBox").checked)
     checked.push(document.getElementById("drivesBox").checked)
     checked.push(document.getElementById("obsBox").checked)
-    console.log(checked)
+    for (i=0; i<checked.length; i++){
+        if (checked[i]){
+            all_unchecked=false;
+        }
+    }
+    if (all_unchecked){
+        source.checked=true
+        printError("Need One Box Checked")
+        return
+    }
+    for (i=0; i<runs.length; i++){
+        runs[i][6] = checked[runs[i][5]]
+    }
+
+    var text = document.getElementById("search").value;
+    var d1 = document.getElementById("dist1").value;
+    var d2 = document.getElementById("dist2").value;
+
+    //create an array to get the values of the upper and lower bound if they're entered
+    //if not then set them to a defined upper and lower bound
+    var dist = new Array(0)
+    if (!isNaN(parseFloat(d1)) && !isNaN(parseFloat(d2))){
+        dist.push(parseFloat(d1))
+        dist.push(parseFloat(d2))
+    }
+    else if (!isNaN(parseFloat(d1)) && isNaN(parseFloat(d2))){
+        dist.push(parseFloat(d1))
+        dist.push(100)
+    }
+    else if (isNaN(parseFloat(d1)) && !isNaN(parseFloat(d2))){
+        dist.push(0)
+        dist.push(parseFloat(d2))
+    }
+    else{
+        dist.push(0)
+        dist.push(100)
+    }
+    /*done getting the thresholds*/
+    var match = false;
+    for (var i=0; i<runs.length; i++){
+        if (runs[i][0].substring(0,text.length).toUpperCase()==text.toUpperCase() && runs[i][1]>dist[0] && runs[i][1]<dist[1] && runs[i][6]){
+            match = true;
+        }
+    }
+
+    if (!match){
+        source.checked=true
+        printError("Nothing Matches Searches, undo searches to uncheck box")
+        return
+    }
+    /*done with reset*/
+    for (i=0; i<clickOrder.length; i++){
+        if (!runs[clickOrder[i]][6]){
+            doShow([clickOrder[i],getTableIndex(clickOrder[i])])
+            i--
+        }
+    }
+
+    //take the table and clear it out and then if any run matches the thresholds then add it back
+    var table = document.getElementById("routes");
+    var row;
+    while (table.rows.length > 1) {
+      table.deleteRow(1);
+    }
+    for (var i=0; i<runs.length; i++){
+        if (runs[i][0].substring(0,text.length).toUpperCase()==text.toUpperCase() && runs[i][1]>dist[0] && runs[i][1]<dist[1] && runs[i][6]){
+
+        row = table.insertRow();
+        for (var j = 0; j<2; j++){
+            row.insertCell();
+        }
+        row.cells[0].innerHTML = runs[i][0]
+        row.cells[1].innerHTML = runs[i][1]+"";
+        row.cells[0].addEventListener("click", show);
+        row.cells[1].addEventListener("click", show);
+        //if there's click than re add the clicked runs
+        for (var j=0; j<clickOrder.length; j++){
+            if (clickOrder[j]==i){
+                row.cells[0].style.backgroundColor = "black";
+                row.cells[1].style.backgroundColor = "black";
+                continue;
+            }
+        }
+        if (row.cells[0].style.backgroundColor!="black"){
+            row.cells[0].style.backgroundColor = "#C21807";
+            row.cells[1].style.backgroundColor = '#C21807';
+        } 
+        row.cells[0].style.color = "white";
+        row.cells[1].style.color = 'white';
+        }
+    }
+
 }
 
 /*Done With Event handling*/
@@ -314,7 +424,6 @@ function filter(){
 
 function showInfo(runIndex){
     document.getElementById("showInfoDivText").innerHTML = runs[runIndex][3];
-    console.log(clickOrder)
     if (!commentsOn){
         return
     }
@@ -462,6 +571,17 @@ function getTableIndex(runsIndex){
             return i;
         }
     }
+    return -1
+}
+
+function getRunIndex(tableIndex){
+    var rows = document.getElementById("routes").rows;
+    for (i=0; i<runs.length; i++){
+        if (rows[tableIndex].cells[0].innerHTML==runs[i][0]){
+            return i;
+        }
+    }
+    return -1
 }
 
 //function to print an error message to the screen
@@ -552,6 +672,8 @@ function doShow(indices){
         } 
     }
     else{
+        console.log(runs[indices[0]][0])
+        console.log(runs[indices[0]][6])
         map.setLayoutProperty(runs[indices[0]][0], 'visibility', 'visible');
         if (getMagnitude([map.getCenter().lng-runs[indices[0]][2].features[0].geometry.coordinates[0][0][0],map.getCenter().lat-runs[indices[0]][2].features[0].geometry.coordinates[0][0][1]])>.02){
             map.setCenter(runs[indices[0]][2].features[0].geometry.coordinates[0][0]);
@@ -565,7 +687,6 @@ function doShow(indices){
         document.getElementById("routes").rows[indices[1]].cells[1].style.backgroundColor = "black"
         if (curSingle && clickOrder.length!=0){
             for (var i=0; i<document.getElementById("routes").rows.length; i++){
-                //console.log(document.getElementById("routes").rows[i].cells[0].innerHTML)
                 if (document.getElementById("routes").rows[i].cells[0].innerHTML==runs[clickOrder[0]][0]){
                     document.getElementById("routes").rows[getTableIndex(clickOrder[0])].cells[0].style.backgroundColor = '#C21807'
                     document.getElementById("routes").rows[getTableIndex(clickOrder[0])].cells[1].style.backgroundColor = '#C21807'
