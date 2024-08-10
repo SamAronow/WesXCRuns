@@ -2,9 +2,6 @@
     .close-button {
     right: 0px;
 }
-#toggleSat{
-    visibility: hidden !important;
-}
 #toggleSelect{
     visibility: hidden !important;
 }
@@ -52,15 +49,26 @@
 }
 #toggleSat{
     position: fixed;
-    top : 50px;
+    top : 33px;
     left: 5px;
     padding: 3px;
     height: 25px;
     width: 27%;
     display: block;
 }
+
+
 #help{
     top:60px;
     left: 5px;
+    font-size: 18px;
+    height: 30px;
+    width: 20px;
+    position: fixed;
+    z-index: 3;
+    border-radius: 30px;
+    color: black;
+    background-color: white;
+    border: 1px solid black;
 }
 }
