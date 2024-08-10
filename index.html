@@ -23,7 +23,8 @@
   <div class="overlay" id="overlay"></div>
 
   <div class="popup" id="popup">
-    <span class="close-button" onclick="closePopup()" id = "pop">&times;</span>
+    <span class="close-button" onclick="closePopup()">&times;</span>
+    <div id ="poptext">
     <p>Toggle between single and multi select using the toggle in the bottom</p>
     <p>Single Select - one route gets selected at a time and selecting a new one replaces the old</p>
     <p>Multi  Select - can select as many runs at once and it will keep adding them</p>
@@ -33,6 +34,8 @@
     <p><b>Checkboxes- can check and uncheck different types of runs to make them visible, <p>MAIN is the base runs we do, ADD is add ons and wu/cd loops, MOD is modifications to loops, DRIVE is runs you have to drive to, OB is out and backs</p></b></p>
   </p><b>On Computer you can toggle through the routes with up and down arrow in single select mode</b></p>
   </div>
+</div>
+
 
   <button id = "help" onclick="showPopup()"><b>?</b></button>
 
