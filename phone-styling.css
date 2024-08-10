@@ -62,13 +62,13 @@
     top:60px;
     left: 5px;
     font-size: 18px;
-    height: 30px;
+    height: 20px;
     width: 20px;
     position: fixed;
     z-index: 3;
     border-radius: 20px;
     color: black;
-    background-color: white;
+    background-color: grey;
     border: 1px solid black;
 }
 }
