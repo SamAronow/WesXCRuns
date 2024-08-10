@@ -463,7 +463,7 @@ if (isPortrait()){
     document.getElementById("show").innerHTML="&#8595;"
     document.getElementById("hide").innerHTML="&#8595;"
     document.getElementById("show").style.bottom = "0px";
-    document.getElementById("poptext").innerHTML="<p>Satellite and Street View- can change between them using toggle in the bottom right</p><p><b>Search function - can use name and 2 distance fields in header of the table of routes to search for routesthat contain the text in the name field and have a distance between the 2 distance fields</b></p><p><b>Checkboxes- can check and uncheck different types of runs to make them visible, <p>MAIN is the base runs we do, ADD is add ons and wu/cd loops, MOD is modifications to loops, DRIVE is runs you have to drive to, OB is out and backs</p></b></p></p>"
+    document.getElementById("poptext").innerHTML="<p>Satellite and Street View- can change between them using toggle in the bottom right</p><p>Search function - can use name and 2 distance fields in header of the table of routes to search for routesthat contain the text in the name field and have a distance between the 2 distance fields</p><p>Checkboxes- can check and uncheck different types of runs to make them visible, <p>MAIN is the base runs we do, ADD is add ons and wu/cd loops, MOD is modifications to loops, DRIVE is runs you have to drive to, OB is out and backs</p></p></p>"
 }
 
 function hideTable(){
