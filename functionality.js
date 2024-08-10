@@ -470,6 +470,7 @@ function hideTable(){
     document.getElementById("show").style.display = 'block';
     document.getElementById("hide").style.display = 'none';
     document.getElementById("RouteTable").style.display = 'none';
+    document.getElementById("showInfoDiv").style.display = 'none'
     if (!isPortrait()){
         document.getElementById("showInfoDiv").style.display = 'none'
     }
