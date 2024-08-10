@@ -63,9 +63,9 @@
     text-align: center;
     right: 5px;
     top: 5px;
-    font-size: 15px;
+    font-size: 18px;
     height: 30px;
-    width: 20px;
+    width: auto;
     position: fixed;
     z-index: 3;
     border-radius: 30px;
