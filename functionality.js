@@ -37,7 +37,7 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoic2FtYXJudyIsImEiOiJjbGl1c2F1dDAwOW02M3BueTJwd
 //instantiate my map with prefered settings
 var map = new mapboxgl.Map({
     container: 'map', // Container ID
-    style: 'mapbox://styles/mapbox/streets-v11', // Mapbox Satellite Streets style
+    style: 'mapbox://styles/mapbox/satellite-streets-v11', // Mapbox Satellite Streets style
     center: [-72.667, 41.551358], // Initial center coordinates (longitude, latitude)
     zoom: 13.5// Initial zoom level
 });
@@ -118,7 +118,7 @@ map.on('mousemove', (e) => {
 */
 var clickOrder = new Array(0);
 var curSingle = true;
-var isSatellite=false;
+var isSatellite=true;
 var showingInfo = true;
 document.getElementById("dist1").value =""
 document.getElementById("dist2").value =""
