@@ -677,7 +677,7 @@ function doShow(indices){
                  map.setZoom(12.8)
                  if (isPortrait()){
                     map.setCenter([runs[indices[0]][7][0],runs[indices[0]][7][1]-.01]);
-                    map.setZoom(12.6)
+                    map.setZoom(12.4)
                  }
             }
             else if (runs[indices[0]][1]>=10){
@@ -685,7 +685,7 @@ function doShow(indices){
                  map.setZoom(12.5)
                  if (isPortrait()){
                     map.setCenter([runs[indices[0]][7][0],runs[indices[0]][7][1]-.01]);
-                    map.setZoom(12.4)
+                    map.setZoom(12.2)
                  }
             }
             else{
@@ -693,7 +693,7 @@ function doShow(indices){
                 map.setZoom(13)
                 if (isPortrait()){
                     map.setCenter([runs[indices[0]][7][0],runs[indices[0]][7][1]-.01]);
-                    map.setZoom(12.8)
+                    map.setZoom(12.6)
                  }
             }
         }/*
