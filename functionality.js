@@ -22,6 +22,7 @@ for (i=0; i<runs.length; i++){
 
 
 
+
 /*----------------------------------------------------------------------------------------------------------------------------*/
 /*Set up map instructions*/
 
@@ -539,7 +540,7 @@ function toggleSelect(){
       }
 }
 
-commentsOn=true
+commentsOn=false
 function toggleComments(){
     if (document.getElementById("toggleComments").textContent == "Comments On"){
         document.getElementById("toggleComments").textContent = "Comments Off"
