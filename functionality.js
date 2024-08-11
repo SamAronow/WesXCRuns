@@ -1,4 +1,11 @@
-/*for (i=0; i<runs.length; i++){
+for (i=0; i<runs.length; i++){
+    if (runs[i][5]==1 || runs[i][5]==3){
+        runs[i].push(false)
+        continue
+    }
+    runs[i].push(true)
+}
+for (i=0; i<runs.length; i++){
     coords = runs[i][2].features[0].geometry.coordinates[0]
     lon=0
     lat=0
@@ -9,21 +16,8 @@
     lon=lon/coords.length
     lat=lat/coords.length
     runs[i].push([lon,lat])
-}*/
-
-/*
-sums=[0,0,0,0,0]
-for (i=0; i<runs.length; i++){
-    sums[runs[i][5]]++
-}*/
-
-for (i=0; i<runs.length; i++){
-    if (runs[i][5]==1 || runs[i][5]==3){
-        runs[i].push(false)
-        continue
-    }
-    runs[i].push(true)
 }
+
 
 
 
@@ -39,7 +33,7 @@ var map = new mapboxgl.Map({
     container: 'map', // Container ID
     style: 'mapbox://styles/mapbox/satellite-streets-v11', // Mapbox Satellite Streets style
     center: [-72.667, 41.551358], // Initial center coordinates (longitude, latitude)
-    zoom: 13.5// Initial zoom level
+    zoom: 13.2// Initial zoom level
 });
 
 //when the map loads in get runs from routes.js. add them as a layer and make them invisible until selected
@@ -679,9 +673,19 @@ function doShow(indices){
         console.log(runs[indices[0]][0])
         console.log(runs[indices[0]][6])
         map.setLayoutProperty(runs[indices[0]][0], 'visibility', 'visible');
-        if (getMagnitude([map.getCenter().lng-runs[indices[0]][2].features[0].geometry.coordinates[0][0][0],map.getCenter().lat-runs[indices[0]][2].features[0].geometry.coordinates[0][0][1]])>.02){
-            map.setCenter(runs[indices[0]][2].features[0].geometry.coordinates[0][0]);
-            map.setZoom(13.5)
+        if (getMagnitude([map.getCenter().lng-runs[indices[0]][7][0],map.getCenter().lat-runs[indices[0]][7][1]])>.015){
+            if (runs[indices[0]][1]>7 && runs[indices[0]][1]<10){
+                map.setCenter(runs[indices[0]][7]);
+                 map.setZoom(12.8)
+            }
+            else if (runs[indices[0]][1]>=10){
+                map.setCenter(runs[indices[0]][7]);
+                 map.setZoom(12.5)
+            }
+            else{
+                map.setCenter(runs[indices[0]][7]);
+                map.setZoom(13)
+            }
         }/*
        if (getMagnitude([map.getCenter().lng-runs[indices[0]][5][0],map.getCenter().lat-runs[indices[0]][5][1]])>.02){
             map.setCenter(runs[indices[0]][5]);
