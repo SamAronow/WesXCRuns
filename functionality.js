@@ -541,6 +541,9 @@ function toggleSelect(){
 }
 
 commentsOn=false
+if (!isPortrait()){
+commentsOn=true
+}
 function toggleComments(){
     if (document.getElementById("toggleComments").textContent == "Comments On"){
         document.getElementById("toggleComments").textContent = "Comments Off"
