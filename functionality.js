@@ -164,7 +164,7 @@ document.addEventListener('keydown', handleArrowKeys);
 
 //handle arrows to move around in run select
 function handleArrowKeys(event){
-    if (!curSingle){
+    if (!curSingle || clickOrder.length!=1){
         return;
     }
     runIndex = clickOrder[0]
@@ -238,7 +238,7 @@ function search(event){
     //see if any routes match the description
     var match = false;
     for (var i=0; i<runs.length; i++){
-        if (runs[i][0].substring(0,text.length).toUpperCase()==text.toUpperCase() && runs[i][1]>dist[0] && runs[i][1]<dist[1] && runs[i][6]){
+        if (runs[i][0].toUpperCase().includes(text.toUpperCase()) && runs[i][1]>dist[0] && runs[i][1]<dist[1] && runs[i][6]){
             match = true;
         }
     }
@@ -267,7 +267,7 @@ function search(event){
       table.deleteRow(1);
     }
     for (var i=0; i<runs.length; i++){
-        if (runs[i][0].substring(0,text.length).toUpperCase()==text.toUpperCase() && runs[i][1]>dist[0] && runs[i][1]<dist[1] && runs[i][6]){
+        if (runs[i][0].toUpperCase().includes(text.toUpperCase()) && runs[i][1]>dist[0] && runs[i][1]<dist[1] && runs[i][6]){
 
         row = table.insertRow();
         for (var j = 0; j<2; j++){
@@ -358,7 +358,7 @@ function filter(source){
     /*done getting the thresholds*/
     var match = false;
     for (var i=0; i<runs.length; i++){
-        if (runs[i][0].substring(0,text.length).toUpperCase()==text.toUpperCase() && runs[i][1]>dist[0] && runs[i][1]<dist[1] && runs[i][6]){
+        if (runs[i][0].toUpperCase().includes(text.toUpperCase()) && runs[i][1]>dist[0] && runs[i][1]<dist[1] && runs[i][6]){
             match = true;
         }
     }
@@ -383,7 +383,7 @@ function filter(source){
       table.deleteRow(1);
     }
     for (var i=0; i<runs.length; i++){
-        if (runs[i][0].substring(0,text.length).toUpperCase()==text.toUpperCase() && runs[i][1]>dist[0] && runs[i][1]<dist[1] && runs[i][6]){
+        if (runs[i][0].toUpperCase().includes(text.toUpperCase()) && runs[i][1]>dist[0] && runs[i][1]<dist[1] && runs[i][6]){
 
         row = table.insertRow();
         for (var j = 0; j<2; j++){
@@ -670,8 +670,6 @@ function doShow(indices){
         } 
     }
     else{
-        console.log(runs[indices[0]][0])
-        console.log(runs[indices[0]][6])
         map.setLayoutProperty(runs[indices[0]][0], 'visibility', 'visible');
         if (getMagnitude([map.getCenter().lng-runs[indices[0]][7][0],map.getCenter().lat-runs[indices[0]][7][1]])>.015){
             if (runs[indices[0]][1]>7 && runs[indices[0]][1]<10){
