@@ -672,7 +672,7 @@ function doShow(indices){
     }
     else{
         map.setLayoutProperty(runs[indices[0]][0], 'visibility', 'visible');
-        if (getMagnitude([map.getCenter().lng-runs[indices[0]][7][0],map.getCenter().lat-runs[indices[0]][7][1]])>.015){
+        if (getMagnitude([map.getCenter().lng-runs[indices[0]][7][0],map.getCenter().lat-runs[indices[0]][7][1]])>.01){
             if (runs[indices[0]][1]>7 && runs[indices[0]][1]<10){
                 map.setCenter(runs[indices[0]][7]);
                  map.setZoom(12.8)
