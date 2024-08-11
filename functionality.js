@@ -675,14 +675,26 @@ function doShow(indices){
             if (runs[indices[0]][1]>7 && runs[indices[0]][1]<10){
                 map.setCenter(runs[indices[0]][7]);
                  map.setZoom(12.8)
+                 if (isPortrait()){
+                    map.setCenter([runs[indices[0]][7][0],runs[indices[0]][7][1]-.01]);
+                    map.setZoom(12.6)
+                 }
             }
             else if (runs[indices[0]][1]>=10){
                 map.setCenter(runs[indices[0]][7]);
                  map.setZoom(12.5)
+                 if (isPortrait()){
+                    map.setCenter([runs[indices[0]][7][0],runs[indices[0]][7][1]-.01]);
+                    map.setZoom(12.4)
+                 }
             }
             else{
                 map.setCenter(runs[indices[0]][7]);
                 map.setZoom(13)
+                if (isPortrait()){
+                    map.setCenter([runs[indices[0]][7][0],runs[indices[0]][7][1]-.01]);
+                    map.setZoom(12.8)
+                 }
             }
         }/*
        if (getMagnitude([map.getCenter().lng-runs[indices[0]][5][0],map.getCenter().lat-runs[indices[0]][5][1]])>.02){
