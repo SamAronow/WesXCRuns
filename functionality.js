@@ -728,3 +728,84 @@ function isPortrait() {
 }
 /*Done with helper functions*/
 /*----------------------------------------------------------------------------------------------------------------------------*/
+async function getElevation(lng, lat, zoom = 15) {
+    // Convert latitude and longitude to XYZ tile coordinates
+    const [x, y] = lngLatToTile(lng, lat, zoom);
+  
+    // URL for Mapbox Terrain-RGB tiles
+    const url = `https://api.mapbox.com/v4/mapbox.terrain-rgb/${zoom}/${x}/${y}.pngraw?access_token=${mapboxgl.accessToken}`;
+    console.log(`Fetching tile from: ${url}`);
+  
+    // Fetch the tile as an image
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error(`Failed to fetch tile: ${response.statusText}`);
+      return null;
+    }
+    const blob = await response.blob();
+    
+    // Create an offscreen canvas to manipulate the image
+    const img = await createImageBitmap(blob);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+    
+    // Calculate pixel coordinates within the tile
+    const pixelX = Math.floor((lng - tile2lng(x, zoom)) / (tile2lng(x + 1, zoom) - tile2lng(x, zoom)) * 256);
+    const pixelY = Math.floor((lat2tile(lat, zoom) - y) / (lat2tile(lat, zoom) - lat2tile(lat, zoom + 1)) * 256);
+  
+    console.log(`Pixel coordinates: (${pixelX}, ${pixelY})`);
+    
+    // Ensure the pixel coordinates are within bounds
+    if (pixelX < 0 || pixelX >= 256 || pixelY < 0 || pixelY >= 256) {
+      console.error('Pixel coordinates are out of bounds.');
+      return null;
+    }
+    
+    // Get RGB values at the calculated pixel position
+    const { data } = ctx.getImageData(pixelX, pixelY, 1, 1);
+  
+    console.log(`RGB values: (${data[0]}, ${data[1]}, ${data[2]})`);
+    
+    // Decode the RGB values to get elevation in meters
+    const elevation = decodeRGB(data[0], data[1], data[2]);
+  
+    return elevation;
+  }
+  
+  // Function to decode Terrain-RGB values
+  function decodeRGB(r, g, b) {
+    return -10000 + ((r * 256 * 256 + g * 256 + b) * 0.1);
+  }
+  
+  // Convert latitude and longitude to tile coordinates
+  function lngLatToTile(lng, lat, zoom) {
+    const tileX = Math.floor((lng + 180) / 360 * Math.pow(2, zoom));
+    const tileY = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom));
+    return [tileX, tileY];
+  }
+  
+  function tile2lng(x, zoom) {
+    return x / Math.pow(2, zoom) * 360 - 180;
+  }
+  
+  function lat2tile(lat, zoom) {
+    return (1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom);
+  }
+  
+  // Example usage:
+  const coordinates = [
+    [-72.66174,41.55179,44.4]
+  ];
+  
+  coordinates.forEach(async ([lng, lat]) => {
+    const elevation = await getElevation(lng, lat);
+    if (elevation !== null) {
+      console.log(`Elevation at (${lng}, ${lat}): ${elevation} meters`);
+    } else {
+      console.log(`Failed to get elevation at (${lng}, ${lat})`);
+    }
+  });
+  
