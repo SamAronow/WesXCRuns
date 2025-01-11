@@ -728,6 +728,8 @@ function isPortrait() {
 }
 /*Done with helper functions*/
 /*----------------------------------------------------------------------------------------------------------------------------*/
+
+/*
 async function getElevation(lng, lat, zoom = 15) {
     // Convert latitude and longitude to XYZ tile coordinates
     const [x, y] = lngLatToTile(lng, lat, zoom);
@@ -808,4 +810,4 @@ async function getElevation(lng, lat, zoom = 15) {
       console.log(`Failed to get elevation at (${lng}, ${lat})`);
     }
   });
-  
+  */
