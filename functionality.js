@@ -38,7 +38,8 @@ var map = new mapboxgl.Map({
 });
 
 //when the map loads in get runs from routes.js. add them as a layer and make them invisible until selected
-map.on('load', function() {
+map.on('load', async function() {
+   // runs= await read('/runs/')
     for (var i=0; i<runs.length; i++){
         addLayer(runs[i][2].features[0].geometry.coordinates[0],runs[i][0], "#C21807")
         map.setLayoutProperty(runs[i][0], 'visibility', 'none');

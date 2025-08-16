@@ -1,6 +1,55 @@
 var runs = new Array(0);
 
+const firebaseConfig = {
+  apiKey: "AIzaSyBMXpJ2XAYlhcUi12MaAWkd_xwNaEurjug",
+  authDomain: "wes-runs.firebaseapp.com",
+  projectId: "wes-runs",
+  storageBucket: "wes-runs.firebasestorage.app",
+  messagingSenderId: "910944455697",
+  appId: "1:910944455697:web:9f48e678b163814ced75b0",
+  measurementId: "G-EP6BVSSMLW"
+};
+
+
+  firebase.initializeApp(firebaseConfig);
+var database = firebase.database();
+
+function write(path, value){
+    return database.ref(path).set(value);
+  }
+
+  function update(path, data) {
+  return firebase.database().ref(path).update(data);
+}
+
+  
+
+function read(path) {
+return database.ref(path).once('value')
+  .then(function(snapshot) {
+    //console.log(snapshot.val());
+    return snapshot.val();
+  })
+  .catch(function(error) {
+    console.error("Error reading Data:", error);
+  });
+}
+
+function removeNode(path){
+database.ref(path).remove()
+.then(() => {
+console.log("Node deleted successfully!");
+})
+.catch((error) => {
+console.error("Error deleting node:", error);
+});
+}
+
+
+
+
 /*
+
 runs.push(["Grass Loop",.37,{"type":"FeatureCollection", "features":[
     {"type":"Feature","geometry":{"type":"MultiLineString","coordinates":[
 [ [-72.6624, 41.55029], [-72.66302, 41.55127], [-72.66386, 41.55098], [-72.66341, 41.54993], [-72.66314, 41.54938], [-72.66272, 41.54938], [-72.66185, 41.54966], [-72.66209, 41.55027], [-72.66238, 41.55027]]
@@ -551,3 +600,4 @@ for (let i = 1; i < length; i++) {
     
     runs[j + 1] = curElement;
   }
+
